@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { TrendingUp } from 'lucide-react'
-import { TipoBadge } from '@/components/shared/TipoBadge'
 import { MontoColoreado } from '@/components/shared/MontoColoreado'
 import { PeriodoSelector } from '@/components/shared/PeriodoSelector'
 import { formatFecha, formatPesos } from '@/lib/utils'

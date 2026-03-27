@@ -1,4 +1,4 @@
-import { TIPO_MOVIMIENTO, TIPO_COLOR, TIPO_LABEL } from '@/lib/constants'
+import { TIPO_COLOR, TIPO_LABEL } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
 interface TipoBadgeProps {

@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import { TIPO_MOVIMIENTO } from '@/lib/constants'
 
 const tiposValidos = ['INGRESO', 'EGRESO', 'GASTO', 'INVERSION', 'PRESTAMO', 'TODOS'] as const
 

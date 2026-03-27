@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Plus, Search, Filter } from 'lucide-react'
+import { Plus, Search } from 'lucide-react'
 import { TipoBadge } from '@/components/shared/TipoBadge'
 import { MontoColoreado } from '@/components/shared/MontoColoreado'
 import { PeriodoSelector } from '@/components/shared/PeriodoSelector'
@@ -17,6 +17,15 @@ interface Movimiento {
   fecha: string
   descripcion: string | null
   categoria: { id: string; nombre: string } | null
+}
+
+interface MovimientoEditar {
+  id: string
+  tipo: string
+  monto: number
+  categoria_id: string
+  fecha: string
+  descripcion: string | null
 }
 
 interface GrupoFecha {
@@ -52,7 +61,7 @@ export default function MovimientosPage() {
   const [busqueda, setBusqueda] = useState('')
   const [tiposFiltro, setTiposFiltro] = useState<string[]>([])
   const [formularioAbierto, setFormularioAbierto] = useState(false)
-  const [movimientoEditar, setMovimientoEditar] = useState<any>(null)
+  const [movimientoEditar, setMovimientoEditar] = useState<MovimientoEditar | null>(null)
   const [confirmarEliminar, setConfirmarEliminar] = useState<string | null>(null)
 
   const cargarMovimientos = useCallback(async () => {
@@ -103,7 +112,7 @@ export default function MovimientosPage() {
         abierto={formularioAbierto}
         onCerrar={() => { setFormularioAbierto(false); setMovimientoEditar(null) }}
         onGuardado={cargarMovimientos}
-        movimientoEditar={movimientoEditar}
+        movimientoEditar={movimientoEditar ?? undefined}
       />
 
       {/* Confirmación de eliminación */}
@@ -248,7 +257,7 @@ export default function MovimientosPage() {
                       {/* Acciones (hover) */}
                       <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
-                          onClick={() => { setMovimientoEditar(m); setFormularioAbierto(true) }}
+                          onClick={() => { setMovimientoEditar({ id: m.id, tipo: m.tipo, monto: m.monto, categoria_id: m.categoria?.id ?? '', fecha: m.fecha, descripcion: m.descripcion }); setFormularioAbierto(true) }}
                           className="p-1.5 rounded hover:bg-white/10 text-jy-secondary hover:text-jy-text text-xs transition-colors"
                         >
                           Editar

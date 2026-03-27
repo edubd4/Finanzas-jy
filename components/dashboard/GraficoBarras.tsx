@@ -21,12 +21,24 @@ interface GraficoBarrasProps {
   datos: DatoMes[]
 }
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+interface TooltipEntry {
+  name: string
+  color: string
+  value: number
+}
+
+interface TooltipProps {
+  active?: boolean
+  payload?: TooltipEntry[]
+  label?: string
+}
+
+const CustomTooltip = ({ active, payload, label }: TooltipProps) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-jy-card border border-white/10 rounded-lg p-3 text-sm">
         <p className="text-jy-text font-medium mb-1">{label}</p>
-        {payload.map((entry: any) => (
+        {payload.map((entry: TooltipEntry) => (
           <p key={entry.name} style={{ color: entry.color }}>
             {entry.name === 'ingresos' ? 'Ingresos' : 'Egresos'}:{' '}
             {new Intl.NumberFormat('es-AR', {
