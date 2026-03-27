@@ -31,7 +31,7 @@
 4. QA checklist: auth flow, dashboard metrics, CRUD operations, filters, mobile
 
 ### Plans
-- [ ] 01-01-PLAN.md — Fix dependencies, create Dockerfile, deploy to Dokploy
+- [~] 01-01-PLAN.md — Fix dependencies, create Dockerfile, deploy to Dokploy (tasks 1-2 done, task 3 awaiting human: Dokploy deploy)
 - [ ] 01-02-PLAN.md — QA all modules on production
 
 ---
