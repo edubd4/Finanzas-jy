@@ -3,20 +3,20 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: Definition of Done
 current_phase: 01
-status: checkpoint
-last_updated: "2026-03-27T02:45:00.000Z"
+status: in-progress
+last_updated: "2026-03-27T03:30:00.000Z"
 progress:
   total_phases: 3
   completed_phases: 0
   total_plans: 2
-  completed_plans: 0
+  completed_plans: 1
 ---
 
 # Project State: FinanzasJY
 
 **Last updated:** 2026-03-27
 **Current phase:** 01
-**Stopped at:** Task 3 of 01-01-PLAN.md (checkpoint:human-action — Dokploy deploy)
+**Stopped at:** 01-01-PLAN.md complete — starting 01-02-PLAN.md (QA)
 
 ## Project Reference
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-03-26)
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 1 | MVP Deployment | In Progress | ~85% — build fixed, Docker ready, deploy pending |
+| 1 | MVP Deployment | In Progress | ~50% — deployed to production, QA pending |
 | 2 | Loans + UX | Pending | 0% |
 | 3 | Advanced Features | Pending | 0% |
 
@@ -58,18 +58,19 @@ See: .planning/PROJECT.md (updated 2026-03-26)
 - GET/POST `/api/categorias`
 - GET/PATCH/DELETE `/api/categorias/[id]`
 
-**Deployment (01-01-PLAN.md — tasks 1-2 complete):**
+**Deployment (01-01-PLAN.md — ALL TASKS COMPLETE):**
 
 - All 7 missing runtime dependencies added to package.json and package-lock.json
 - `next.config.mjs` updated with `output: 'standalone'`
 - `npm run build` succeeds — `.next/standalone/server.js` exists
-- `Dockerfile` created (multi-stage, runs as nextjs:1001, exposes 3000)
+- `Dockerfile` created (multi-stage, node:20-alpine, runs as nextjs:1001, exposes 3000, NEXT_PUBLIC vars as build ARGs)
 - `.dockerignore` created
+- App deployed to Dokploy — login page accessible at production URL
+- All 3 Supabase env vars configured in Dokploy (NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY)
 
 ## Phase 1 — What's Pending
 
-1. **Dokploy deploy** (Task 3 of 01-01): Human must push code, create app in Dokploy, set 3 env vars, trigger deploy
-2. **QA** (01-02-PLAN.md): Manual testing of all modules on desktop and mobile
+1. **QA** (01-02-PLAN.md): Manual testing of all modules on desktop and mobile
 
 ## Decisions Made
 
@@ -78,6 +79,8 @@ See: .planning/PROJECT.md (updated 2026-03-26)
 | --legacy-peer-deps for install | @supabase/ssr has peer conflict with supabase-js v2.100.1 | Required clean reinstall; lock file generated correctly |
 | MovimientoEditar bridge interface | Movimiento has `categoria` object, FormularioMovimiento needs `categoria_id` | Clean type mapping at the click handler |
 | Standalone ENOENT warning on Windows | Known Windows path issue with Next.js standalone | No action needed — Docker builds on Linux |
+| Upgraded Dockerfile to node:20-alpine | node:18 caused npm ci lock file format mismatch with locally generated lock file | node:20 matches local npm version; Docker build succeeds |
+| NEXT_PUBLIC vars as Docker build ARGs | Next.js embeds NEXT_PUBLIC_* at build time — env vars alone not enough | Added ARG declarations in builder stage; Dokploy passes them as build arguments |
 
 ## Key Patterns (for plan-phase reference)
 
@@ -108,4 +111,4 @@ await supabase.from('movimientos').select('*').is('deleted_at', null)
 
 ---
 *State initialized: 2026-03-26 via GSD new-project*
-*Last updated: 2026-03-27 — 01-01-PLAN.md tasks 1-2 complete, awaiting Dokploy deploy*
+*Last updated: 2026-03-27 — 01-01-PLAN.md complete (all 3 tasks), app deployed to Dokploy production*

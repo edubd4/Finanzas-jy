@@ -7,7 +7,7 @@
 
 ## Phase 1: MVP Deployment
 **Goal:** Ship the working MVP to production so Jose can start using it daily.
-**Status:** In Progress (~75% — code complete, pending deploy)
+**Status:** In Progress (~50% — deployed to production, QA pending)
 **Plans:** 2 plans
 
 ### Requirements Covered
@@ -31,7 +31,7 @@
 4. QA checklist: auth flow, dashboard metrics, CRUD operations, filters, mobile
 
 ### Plans
-- [~] 01-01-PLAN.md — Fix dependencies, create Dockerfile, deploy to Dokploy (tasks 1-2 done, task 3 awaiting human: Dokploy deploy)
+- [x] 01-01-PLAN.md — Fix dependencies, create Dockerfile, deploy to Dokploy — COMPLETE (all 3 tasks, app live in production)
 - [ ] 01-02-PLAN.md — QA all modules on production
 
 ---
@@ -78,4 +78,4 @@
 
 ---
 *Roadmap created: 2026-03-26*
-*Last updated: 2026-03-26 — Phase 1 plans created*
+*Last updated: 2026-03-27 — 01-01-PLAN.md complete; app deployed to Dokploy*

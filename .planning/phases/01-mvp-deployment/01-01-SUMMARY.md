@@ -1,16 +1,25 @@
 ---
 phase: 01-mvp-deployment
 plan: 01
-subsystem: deployment
-status: partial-checkpoint
-tags: [deployment, docker, dependencies, build]
+subsystem: infra
+tags: [docker, nextjs, standalone, supabase, dokploy, deployment]
 dependency_graph:
   requires: []
-  provides: [dockerfile, standalone-build, runtime-deps]
-  affects: [deployment-pipeline]
+  provides: [dockerfile, standalone-build, runtime-deps, production-deploy]
+  affects: [01-02-qa]
 tech_stack:
-  added: [Dockerfile, .dockerignore, package-lock.json]
-  patterns: [next-standalone-output, multi-stage-docker-build]
+  added:
+    - "@supabase/ssr"
+    - "@supabase/supabase-js"
+    - "clsx"
+    - "lucide-react"
+    - "recharts"
+    - "tailwind-merge"
+    - "zod"
+  patterns:
+    - multi-stage-docker-build
+    - next-standalone-output
+    - NEXT_PUBLIC-vars-as-docker-build-args
 key_files:
   created:
     - Dockerfile
@@ -24,93 +33,145 @@ key_files:
     - components/dashboard/GraficoBarras.tsx
     - components/shared/TipoBadge.tsx
     - lib/schemas/categorias.ts
-decisions:
-  - "Used --legacy-peer-deps for install due to @supabase/ssr peer conflict with supabase-js v2.100.1; required clean reinstall of node_modules after lock file corruption"
-  - "Added MovimientoEditar interface in movimientos/page.tsx to bridge Movimiento (has categoria object) with FormularioMovimiento prop (expects categoria_id)"
-  - "Standalone output ENOENT warning on Windows during build is a known Windows path issue — does not affect Linux Docker builds"
+key-decisions:
+  - "Used --legacy-peer-deps for install due to @supabase/ssr peer conflict with supabase-js v2.100.1"
+  - "Upgraded Dockerfile base to node:20-alpine — node:18 caused npm ci lock file format mismatch"
+  - "NEXT_PUBLIC_* vars passed as Docker build ARGs — required for Next.js build-time embedding"
+  - "SUPABASE_SERVICE_ROLE_KEY injected at runtime only — correct for server-side secrets"
+  - "Standalone output ENOENT warning on Windows is a known path issue — does not affect Linux Docker builds"
+patterns-established:
+  - "Docker multi-stage: deps (npm ci) -> builder (npm run build) -> runner (standalone copy)"
+  - "Non-root Docker user: nextjs:1001 / nodejs:1001 group"
+  - "NEXT_PUBLIC env vars as ARGs in builder stage for Dokploy build configuration"
+requirements-completed:
+  - DEPL-01
+  - DEPL-02
 metrics:
-  duration: "~20 minutes"
+  duration: "~45min (two sessions with human checkpoint)"
   completed_date: "2026-03-27"
-  tasks_completed: 2
+  tasks_completed: 3
   tasks_total: 3
   files_changed: 11
 ---
 
-# Phase 1 Plan 1: Fix Dependencies, Standalone Output, Dockerfile — Summary
+# Phase 1 Plan 01: Fix Dependencies, Standalone Output, Dockerfile, Deploy — Summary
 
-**One-liner:** Added 7 missing runtime deps to package.json, enabled Next.js standalone output, created multi-stage Dockerfile for Dokploy, and fixed 6 TypeScript/ESLint errors blocking the production build.
+**Next.js 14 app containerized with multi-stage Dockerfile using standalone output, all 7 missing runtime deps declared, and deployed to Dokploy production with Supabase env vars configured and login page confirmed accessible.**
 
-## Tasks Completed
+## Performance
 
-| Task | Description | Commit | Status |
-|------|-------------|--------|--------|
-| 1 | Fix package.json deps + next.config.mjs standalone + build | `3229c57` | Done |
-| 2 | Create Dockerfile and .dockerignore | `8a26503` | Done |
-| 3 | Configure Dokploy and deploy | — | Awaiting human action |
+- **Duration:** ~45 min (across two sessions with human checkpoint for Dokploy configuration)
+- **Started:** 2026-03-27T02:00:00Z
+- **Completed:** 2026-03-27T03:30:00Z
+- **Tasks:** 3 completed (2 automated, 1 human-action)
+- **Files modified:** 11
 
-## What Was Built
+## Accomplishments
 
-### Task 1 — Dependencies and Build
+- Fixed 7 missing runtime dependencies that would have caused `npm install` to fail in a fresh Docker environment
+- Fixed 6 TypeScript/ESLint errors blocking `npm run build` (unused imports, implicit `any` types, type mismatches)
+- Enabled Next.js standalone output mode — generates self-contained `server.js` for Docker
+- Created production-grade multi-stage Dockerfile (deps -> builder -> runner) running as non-root user nextjs:1001
+- App deployed to Dokploy production with all 3 Supabase env vars configured; login page accessible at production URL
 
-Added missing runtime dependencies to `package.json`:
-- `@supabase/ssr` ^0.9.0
-- `@supabase/supabase-js` ^2.78.0
-- `clsx` ^2.1.1
-- `lucide-react` ^1.7.0
-- `recharts` ^3.8.1
-- `tailwind-merge` ^3.5.0
-- `zod` ^4.3.6
+## Task Commits
 
-Updated `next.config.mjs` to enable `output: 'standalone'` for Docker compatibility.
+Each task was committed atomically:
 
-Fixed 6 TypeScript/ESLint errors that blocked `npm run build`:
-1. Removed unused `TipoBadge` import in `ingresos/page.tsx`
-2. Removed unused `Filter` import in `movimientos/page.tsx`
-3. Replaced `any` type with `MovimientoEditar` interface in `movimientos/page.tsx`
-4. Fixed `null` vs `undefined` mismatch for `movimientoEditar` prop
-5. Replaced `any` types in `GraficoBarras.tsx` with `TooltipProps`/`TooltipEntry` interfaces
-6. Removed unused `TIPO_MOVIMIENTO` imports from `TipoBadge.tsx` and `lib/schemas/categorias.ts`
+1. **Task 1: Fix package.json dependencies and verify build** - `3229c57` (feat)
+2. **Task 2: Create Dockerfile and .dockerignore** - `8a26503` (feat)
+3. **Task 2 deviation: Upgrade to node:20, fix lock file, pass NEXT_PUBLIC vars as build ARGs** - `4208245` (fix)
+4. **Task 3: Configure Dokploy and deploy** - Human action (Dokploy dashboard — no code commit)
 
-Build result: `npm run build` exits with code 0. `.next/standalone/server.js` exists.
+**Plan metadata:** `79bfa25` (docs: checkpoint message from previous session)
 
-### Task 2 — Docker Configuration
+## Files Created/Modified
 
-Created `Dockerfile` using the official Next.js multi-stage standalone pattern:
-- Stage 1 `deps`: install all npm packages with `npm ci`
-- Stage 2 `builder`: copy source + node_modules, run `npm run build`
-- Stage 3 `runner`: copy only `.next/standalone` + `.next/static` + `public`, runs as non-root `nextjs:1001`
+- `package.json` — Added @supabase/ssr, @supabase/supabase-js, clsx, lucide-react, recharts, tailwind-merge, zod to dependencies
+- `package-lock.json` — Generated by npm install (was missing entirely before)
+- `next.config.mjs` — Added `output: 'standalone'` required for Docker standalone build
+- `Dockerfile` — Multi-stage build: deps (npm ci) -> builder (npm run build) -> runner (standalone copy). Non-root user nextjs:1001, exposes 3000. Uses node:20-alpine. NEXT_PUBLIC vars as build ARGs.
+- `.dockerignore` — Excludes node_modules, .next, .git, .env.local, .env*.local
+- `app/(dashboard)/ingresos/page.tsx` — Removed unused TipoBadge import
+- `app/(dashboard)/movimientos/page.tsx` — Removed unused Filter import, added MovimientoEditar interface
+- `components/dashboard/GraficoBarras.tsx` — Replaced `any` with TooltipProps/TooltipEntry interfaces
+- `components/shared/TipoBadge.tsx` — Removed unused TIPO_MOVIMIENTO import
+- `lib/schemas/categorias.ts` — Removed unused import
 
-Created `.dockerignore` excluding `node_modules`, `.next`, `.git`, `.env.local`, `.env*.local`.
+## Decisions Made
+
+- **node:20 upgrade:** Initial Dockerfile used node:18-alpine but `npm ci` failed due to lock file format mismatch. Upgraded to node:20 which matched the lock file generated locally.
+- **NEXT_PUBLIC vars as build ARGs:** `NEXT_PUBLIC_*` vars must be embedded at build time in Next.js. Added as Docker `ARG` declarations in the builder stage so Dokploy passes them during `docker build`.
+- **SUPABASE_SERVICE_ROLE_KEY at runtime only:** Server-side secret, does not need to be a build ARG — injected via Dokploy env vars at runtime.
+- **--legacy-peer-deps:** Required due to `@supabase/ssr` peer dependency conflict with `@supabase/supabase-js` v2.100.1.
 
 ## Deviations from Plan
 
 ### Auto-fixed Issues
 
 **1. [Rule 1 - Bug] Corrupted node_modules after first npm install attempt**
-- **Found during:** Task 1 — first npm install with --legacy-peer-deps removed 329 existing packages, corrupting the `braces` module dependency chain
+- **Found during:** Task 1 (Fix package.json dependencies)
+- **Issue:** First `npm install --legacy-peer-deps` removed 329 existing packages, corrupting the `braces` module dependency chain
 - **Fix:** Deleted `node_modules` and `package-lock.json`, ran clean `npm install --legacy-peer-deps` to regenerate from scratch
 - **Files modified:** package-lock.json (regenerated), node_modules/ (clean install)
-- **Commit:** 3229c57
+- **Committed in:** `3229c57`
 
 **2. [Rule 1 - Bug] 6 TypeScript/ESLint errors blocking build**
 - **Found during:** Task 1 — `npm run build` type-check phase
-- **Issue:** Unused imports, implicit `any` types, `null` vs `undefined` type mismatch
-- **Fix:** Removed 4 unused imports, added typed interfaces for recharts tooltip, bridged Movimiento/MovimientoEditar type shapes
+- **Issue:** Unused imports, implicit `any` types, `null` vs `undefined` type mismatch across 5 source files
+- **Fix:** Removed 4 unused imports, added typed interfaces for recharts tooltip (TooltipProps/TooltipEntry), bridged Movimiento/MovimientoEditar type shapes
 - **Files modified:** 5 source files
-- **Commit:** 3229c57
+- **Committed in:** `3229c57`
+
+**3. [Rule 1 - Bug] Dockerfile node:18 caused npm ci lock file format mismatch**
+- **Found during:** Task 2 — after Dockerfile creation and initial Dokploy deploy attempt
+- **Issue:** `npm ci` inside Docker container failed because package-lock.json was generated with npm 10 (node:20 locally) but the container ran npm 9 (node:18) — lock file format incompatible
+- **Fix:** Upgraded base image from `node:18-alpine` to `node:20-alpine`
+- **Files modified:** Dockerfile
+- **Committed in:** `4208245`
+
+**4. [Rule 2 - Missing Critical] NEXT_PUBLIC vars missing from Docker build ARGs**
+- **Found during:** Task 2 — Dokploy deploy configuration
+- **Issue:** Next.js embeds `NEXT_PUBLIC_*` variables at build time. Without passing them as Docker build arguments, the app would build with undefined Supabase URLs and the client would fail to initialize
+- **Fix:** Added `ARG` and `ENV` declarations in the builder stage of Dockerfile; Dokploy configured to pass them as build arguments
+- **Files modified:** Dockerfile
+- **Committed in:** `4208245`
+
+---
+
+**Total deviations:** 4 auto-fixed (2 bugs in Task 1, 1 bug + 1 missing critical in Task 2)
+**Impact on plan:** All auto-fixes essential — without them the build would fail or the app would not connect to Supabase. No scope creep.
+
+## Issues Encountered
+
+- `npm run build` on Windows produced a spurious ENOENT warning about standalone directory paths — this is a known Windows/Next.js path issue and does not affect the Linux Docker build. No action taken.
+
+## User Setup Required (Completed)
+
+The following was completed manually by the user in the Dokploy dashboard:
+
+1. Pushed code to Git remote
+2. Created application in Dokploy pointing to the Git repository with Dockerfile build type
+3. Configured 3 environment variables:
+   - `NEXT_PUBLIC_SUPABASE_URL` (env var + build arg)
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` (env var + build arg)
+   - `SUPABASE_SERVICE_ROLE_KEY` (env var only — runtime)
+4. Triggered deploy — build succeeded, login page confirmed accessible at production URL
 
 ## Known Stubs
 
 None — all changes are infrastructure and type fixes. No UI or data stubs introduced.
 
-## Awaiting
+## Next Phase Readiness
 
-**Task 3 requires human action in Dokploy dashboard:**
-1. Push this code to the Git remote
-2. Create Dokploy application pointing to this repo
-3. Set environment variables: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
-4. Trigger deploy
-5. Verify login page loads at production URL
+- Production environment is live and accessible — QA can begin immediately
+- All API routes should work with `SUPABASE_SERVICE_ROLE_KEY` configured in Dokploy
+- Next: 01-02-PLAN.md — manual QA of all modules on desktop and mobile
+
+---
+
+*Phase: 01-mvp-deployment*
+*Completed: 2026-03-27*
 
 ## Self-Check: PASSED
 
@@ -118,4 +179,5 @@ None — all changes are infrastructure and type fixes. No UI or data stubs intr
 - `.dockerignore` exists: FOUND
 - `package.json` contains `@supabase/ssr`: FOUND
 - `.next/standalone/server.js` exists: FOUND
-- Commits `3229c57` and `8a26503` exist: FOUND
+- Commits `3229c57`, `8a26503`, `4208245` exist: FOUND
+- Login page accessible on Dokploy: CONFIRMED by user
