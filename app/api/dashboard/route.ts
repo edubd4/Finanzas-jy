@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
   const { data: movimientosPeriodo } = await supabase
     .from('movimientos')
     .select('tipo, monto')
-    .eq('usuario_id', user.id)
+    .eq('created_by', user.id)
     .is('deleted_at', null)
     .neq('estado', 'ELIMINADO')
     .gte('fecha', desde)
@@ -48,7 +48,7 @@ export async function GET(req: NextRequest) {
       id, jy_id, tipo, monto, fecha, descripcion,
       categoria:categorias(id, nombre)
     `)
-    .eq('usuario_id', user.id)
+    .eq('created_by', user.id)
     .is('deleted_at', null)
     .neq('estado', 'ELIMINADO')
     .order('fecha', { ascending: false })
@@ -67,7 +67,7 @@ export async function GET(req: NextRequest) {
     const { data: movMes } = await supabase
       .from('movimientos')
       .select('tipo, monto')
-      .eq('usuario_id', user.id)
+      .eq('created_by', user.id)
       .is('deleted_at', null)
       .neq('estado', 'ELIMINADO')
       .gte('fecha', mDesde)

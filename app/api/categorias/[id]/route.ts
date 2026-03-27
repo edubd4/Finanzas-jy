@@ -22,9 +22,9 @@ export async function PATCH(
   // Verificar ownership
   const { data: existing } = await supabase
     .from('categorias')
-    .select('id, usuario_id')
+    .select('id, created_by')
     .eq('id', params.id)
-    .eq('usuario_id', user.id)
+    .eq('created_by', user.id)
     .single()
 
   if (!existing) {
@@ -59,9 +59,9 @@ export async function DELETE(
 
   const { data: existing } = await supabase
     .from('categorias')
-    .select('id, usuario_id')
+    .select('id, created_by')
     .eq('id', params.id)
-    .eq('usuario_id', user.id)
+    .eq('created_by', user.id)
     .single()
 
   if (!existing) {

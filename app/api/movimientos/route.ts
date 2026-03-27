@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
       *,
       categoria:categorias(id, nombre, tipo)
     `)
-    .eq('usuario_id', user.id)
+    .eq('created_by', user.id)
     .is('deleted_at', null)
     .neq('estado', 'ELIMINADO')
     .order('fecha', { ascending: false })
@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
   const { data, error } = await supabase
     .from('movimientos')
     .insert({
-      usuario_id: user.id,
+      created_by: user.id,
       tipo: parsed.data.tipo,
       monto: parsed.data.monto,
       categoria_id: parsed.data.categoria_id,

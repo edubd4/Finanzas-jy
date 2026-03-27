@@ -22,9 +22,9 @@ export async function PATCH(
   // Verificar que el movimiento pertenece al usuario
   const { data: existing } = await supabase
     .from('movimientos')
-    .select('id, jy_id, usuario_id')
+    .select('id, jy_id, created_by')
     .eq('id', params.id)
-    .eq('usuario_id', user.id)
+    .eq('created_by', user.id)
     .is('deleted_at', null)
     .single()
 
@@ -72,9 +72,9 @@ export async function DELETE(
 
   const { data: existing } = await supabase
     .from('movimientos')
-    .select('id, jy_id, usuario_id')
+    .select('id, jy_id, created_by')
     .eq('id', params.id)
-    .eq('usuario_id', user.id)
+    .eq('created_by', user.id)
     .is('deleted_at', null)
     .single()
 

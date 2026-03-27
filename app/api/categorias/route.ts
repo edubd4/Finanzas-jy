@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
   let query = supabase
     .from('categorias')
     .select('*')
-    .eq('usuario_id', user.id)
+    .or(`created_by.eq.${user.id},es_default.eq.true`)
     .eq('estado', 'ACTIVA')
     .order('nombre')
 
@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
   const { data, error } = await supabase
     .from('categorias')
     .insert({
-      usuario_id: user.id,
+      created_by: user.id,
       nombre: parsed.data.nombre,
       tipo: parsed.data.tipo,
       estado: 'ACTIVA',
