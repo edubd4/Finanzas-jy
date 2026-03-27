@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(gsd:plan-phase)",
+      "Bash(node -e \"const lock = require\\(''''./package-lock.json''''\\); const pkg = require\\(''''./package.json''''\\); console.log\\(''''lock supabase-js:'''', lock.packages?.[''''node_modules/@supabase/supabase-js'''']?.version\\); console.log\\(''''pkg requires:'''', pkg.dependencies[''''@supabase/supabase-js'''']\\); console.log\\(''''lock supabase/ssr:'''', lock.packages?.[''''node_modules/@supabase/ssr'''']?.version\\);\")",
+      "Bash(node -e \"const lock = require\\(''./package-lock.json''\\); const supabaseJsDeps = lock.packages?.[''node_modules/@supabase/ssr'']?.dependencies; console.log\\(''@supabase/ssr deps on supabase-js:'', JSON.stringify\\(supabaseJsDeps?.[''@supabase/supabase-js'']\\)\\);\")",
+      "Bash(npm install:*)",
+      "Bash(nvm --version)"
+    ]
+  }
+}

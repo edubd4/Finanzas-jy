@@ -1,0 +1,21 @@
+{
+  "version": "1.0",
+  "project": "finanzas-jy",
+  "created": "2026-03-26",
+  "workflow": {
+    "research": false,
+    "autoCommit": true,
+    "verificationMode": "manual",
+    "language": "es",
+    "_auto_chain_active": false
+  },
+  "profile": "balanced",
+  "milestone": {
+    "current": "v1.0",
+    "phases": [
+      1,
+      2,
+      3
+    ]
+  }
+}
