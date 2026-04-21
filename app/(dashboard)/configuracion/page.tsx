@@ -30,6 +30,7 @@ export default function ConfiguracionPage() {
   const [nuevoNombre, setNuevoNombre] = useState('')
   const [nuevoTipo, setNuevoTipo] = useState<string>(TIPO_MOVIMIENTO.GASTO)
   const [guardandoNueva, setGuardandoNueva] = useState(false)
+  const [errorNueva, setErrorNueva] = useState<string | null>(null)
 
   // Edición inline
   const [editandoId, setEditandoId] = useState<string | null>(null)
@@ -51,14 +52,21 @@ export default function ConfiguracionPage() {
   const crearCategoria = async () => {
     if (!nuevoNombre.trim()) return
     setGuardandoNueva(true)
+    setErrorNueva(null)
     try {
-      await fetch('/api/categorias', {
+      const res = await fetch('/api/categorias', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nombre: nuevoNombre.trim(), tipo: nuevoTipo }),
       })
+      if (!res.ok) {
+        const json = await res.json()
+        setErrorNueva(json?.error?.formErrors?.[0] ?? json?.error ?? 'Error al crear categoría')
+        return
+      }
       setNuevoNombre('')
       setMostrarNueva(false)
+      setFiltroTipo(nuevoTipo)
       cargarCategorias()
     } finally {
       setGuardandoNueva(false)
@@ -103,7 +111,7 @@ export default function ConfiguracionPage() {
         <div className="flex items-center justify-between px-5 py-4 border-b border-white/5">
           <h2 className="text-jy-text font-semibold">Categorías</h2>
           <button
-            onClick={() => setMostrarNueva(!mostrarNueva)}
+            onClick={() => { setMostrarNueva(!mostrarNueva); setErrorNueva(null) }}
             className="flex items-center gap-1.5 px-3 py-1.5 bg-jy-accent text-white rounded-lg text-xs font-medium hover:bg-jy-accent/90 transition-colors"
           >
             <Plus size={14} />
@@ -114,6 +122,9 @@ export default function ConfiguracionPage() {
         {/* Formulario nueva categoría */}
         {mostrarNueva && (
           <div className="px-5 py-4 border-b border-white/5 bg-jy-input/30">
+            {errorNueva && (
+              <p className="text-jy-red text-xs mb-3">{errorNueva}</p>
+            )}
             <div className="flex gap-3 flex-wrap">
               <input
                 type="text"
@@ -143,7 +154,7 @@ export default function ConfiguracionPage() {
                 {guardandoNueva ? 'Guardando...' : 'Guardar'}
               </button>
               <button
-                onClick={() => { setMostrarNueva(false); setNuevoNombre('') }}
+                onClick={() => { setMostrarNueva(false); setNuevoNombre(''); setErrorNueva(null) }}
                 className="px-3 py-2 bg-jy-input text-jy-secondary rounded-lg text-sm hover:text-jy-text transition-colors"
               >
                 Cancelar
