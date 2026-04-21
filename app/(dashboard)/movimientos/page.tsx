@@ -74,7 +74,6 @@ export default function MovimientosPage() {
 
       let url = `/api/movimientos?desde=${desde}&hasta=${hasta}`
       if (tiposFiltro.length > 0) url += `&tipo=${tiposFiltro.join(',')}`
-      if (busqueda) url += `&q=${encodeURIComponent(busqueda)}`
 
       const res = await fetch(url)
       const json = await res.json()
@@ -84,7 +83,7 @@ export default function MovimientosPage() {
     } finally {
       setCargando(false)
     }
-  }, [periodo, tiposFiltro, busqueda])
+  }, [periodo, tiposFiltro])
 
   useEffect(() => {
     cargarMovimientos()
@@ -102,9 +101,18 @@ export default function MovimientosPage() {
     cargarMovimientos()
   }
 
-  const grupos = agruparPorFecha(movimientos)
-  const totalIngresos = movimientos.filter(m => m.tipo === 'INGRESO').reduce((s, m) => s + m.monto, 0)
-  const totalEgresos = movimientos.filter(m => m.tipo === 'EGRESO' || m.tipo === 'GASTO').reduce((s, m) => s + m.monto, 0)
+  const q = busqueda.toLowerCase().trim()
+  const movimientosFiltrados = q
+    ? movimientos.filter((m) => {
+        const desc = (m.descripcion ?? '').toLowerCase()
+        const cat = (m.categoria?.nombre ?? '').toLowerCase()
+        return desc.includes(q) || cat.includes(q)
+      })
+    : movimientos
+
+  const grupos = agruparPorFecha(movimientosFiltrados)
+  const totalIngresos = movimientosFiltrados.filter(m => m.tipo === 'INGRESO').reduce((s, m) => s + m.monto, 0)
+  const totalEgresos = movimientosFiltrados.filter(m => m.tipo === 'EGRESO' || m.tipo === 'GASTO').reduce((s, m) => s + m.monto, 0)
 
   return (
     <>
