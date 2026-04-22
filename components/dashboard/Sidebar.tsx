@@ -62,15 +62,6 @@ export function Sidebar({ userName, onNavigate }: SidebarProps) {
         <p className="text-jy-secondary text-xs mt-2 truncate">{userName}</p>
       </div>
 
-      {/* CTA Nuevo Movimiento */}
-      <button
-        onClick={abrirNuevoMovimiento}
-        className="flex items-center justify-center gap-2 w-full px-3 py-2.5 mb-5 rounded bg-jy-accent text-jy-bg text-sm font-semibold hover:bg-jy-accent-hi transition-colors"
-      >
-        <Plus size={15} />
-        Nuevo Movimiento
-      </button>
-
       {/* Navegación */}
       <ul className="flex-1 space-y-0.5">
         {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
@@ -95,8 +86,17 @@ export function Sidebar({ userName, onNavigate }: SidebarProps) {
         })}
       </ul>
 
+      {/* CTA Nuevo Movimiento (al pie, antes del footer) */}
+      <button
+        onClick={abrirNuevoMovimiento}
+        className="flex items-center justify-center gap-2 w-full px-3 py-2.5 mt-4 rounded bg-jy-accent text-jy-bg text-sm font-semibold hover:bg-jy-accent-hi transition-colors"
+      >
+        <Plus size={15} />
+        Nuevo Movimiento
+      </button>
+
       {/* Footer: Soporte + Logout */}
-      <div className="mt-4 pt-4 border-t border-jy-border space-y-0.5">
+      <div className="mt-3 pt-3 border-t border-jy-border space-y-0.5">
         <a
           href="mailto:eduardo.barreiro93@gmail.com?subject=Soporte%20FinanzasJY"
           className="flex items-center gap-3 px-3 py-2 rounded text-sm text-jy-secondary hover:text-jy-text hover:bg-jy-input transition-colors"
