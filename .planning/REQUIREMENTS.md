@@ -1,6 +1,7 @@
 # Requirements: FinanzasJY
 
 **Defined:** 2026-03-26
+**Last updated:** 2026-04-22 — v2.0 requirements scoped and mapped to phases
 **Core Value:** A single place to register every financial movement and instantly see where money goes.
 
 ## v1 Requirements
@@ -61,25 +62,39 @@
 
 ### Loans (Préstamos)
 
-- **LOAN-01**: Register loans with amount, recipient, start date, installment count
-- **LOAN-02**: System auto-generates monthly installments (PREST-XXXX IDs)
-- **LOAN-03**: User can mark individual installments as paid
-- **LOAN-04**: Dashboard shows upcoming payments in next 30 days
-- **LOAN-05**: Loans appear in movement history with PRESTAMO type
+- [ ] **LOAN-01**: User can register a loan with monto, destinatario, fecha inicio, cantidad de cuotas y frecuencia (mensual)
+- [ ] **LOAN-02**: System auto-generates the installment schedule with PREST-XXXX IDs and due dates
+- [ ] **LOAN-03**: User can mark individual installments as paid (captures paid_at timestamp)
+- [ ] **LOAN-04**: User can view all loans with summary of paid vs remaining cuotas
+- [ ] **LOAN-05**: Dashboard widget shows upcoming installments in the next 30 days
+- [ ] **LOAN-06**: Sidebar entry `/prestamos` navigates to the loans view
+- [ ] **LOAN-07**: Loans and cuotas support soft delete (same pattern as movimientos)
+- [ ] **LOAN-08**: Every loan/cuota mutation writes to the `historial` audit trail
 
-### UI/UX Refinements
+### Inversiones Enhancement
 
-- **UX-01**: Refinements based on real usage feedback after Phase 1 deploy
+- [ ] **INV-01**: Inversión record includes `fecha_entrada` (required), `total_invertido` (required — existing `monto`), `fecha_alerta_salida` (optional), `monto_esperado` (optional)
+- [ ] **INV-02**: Inversión has explicit lifecycle state (`ABIERTA` / `CERRADA`)
+- [ ] **INV-03**: User can close an inversión entering `monto_final`; system auto-calculates `% retorno` and `días mantenida`
+- [ ] **INV-04**: Clicking an inversión opens an expandable detail card showing entrada, invertido, esperado, final, % retorno, días mantenida
+- [ ] **INV-05**: Visual indicator on open inversiones when `fecha_alerta_salida` has been reached (no push notifications)
+- [ ] **INV-06**: Inversiones view lists open and closed inversiones separately
+
+## Future Requirements (deferred)
+
+### v2.1 — UX Refinements (pending Jose's real feedback)
+
+- **UX-01**: Refinements based on real usage feedback
 - **UX-02**: Keyboard shortcuts for common actions
 - **UX-03**: Empty states with helpful prompts
 
-## v3 Backlog
+### v3 Backlog
 
 - Pie charts by category
 - Calendar view of movements
 - Monthly budgets with progress bars
 - CSV export
-- Monthly summaries with comparison
+- Monthly summaries with period-over-period comparison
 - Custom tags on movements
 - Light theme option
 
@@ -88,13 +103,15 @@
 | Feature | Reason |
 |---------|--------|
 | Mobile apps | Web dashboard sufficient for single user; low-medium volume |
-| Bank integrations | Manual entry intentional for v1 |
+| Bank integrations | Manual entry intentional |
 | Real-time investment quotes | Tracking only, not portfolio management |
-| PDF/Excel export | Deferred to Phase 3 |
+| PDF/Excel export | Deferred (v3 backlog) |
 | Multi-user / teams | Single user by design; can expand later |
-| Push notifications | Not needed for personal use v1 |
-| Password change UI | Out of scope v1; use Supabase dashboard |
+| Push notifications | Not needed for personal use; visual indicators only |
+| Password change UI | Out of scope; use Supabase dashboard |
 | OAuth login | Email/password sufficient |
+| Interest calculation on loans | v2 tracks only monto + cuotas fijas; interest deferred |
+| Multi-currency inversiones | Single currency (ARS) like rest of app |
 
 ## Traceability
 
@@ -106,17 +123,27 @@
 | HIST-01–06 | Phase 1 | Complete |
 | VIEW-01–03 | Phase 1 | Complete |
 | CONF-01–03 | Phase 1 | Complete |
-| DEPL-01–02 | Phase 1 | Complete |
-| DEPL-03 | Phase 1 | Pending (QA) |
-| LOAN-01–05 | Phase 2 | Pending |
-| UX-01–03 | Phase 2 | Pending |
+| DEPL-01–03 | Phase 1 | Complete |
+| LOAN-01 | Phase 2 | Pending |
+| LOAN-02 | Phase 2 | Pending |
+| LOAN-03 | Phase 2 | Pending |
+| LOAN-04 | Phase 2 | Pending |
+| LOAN-05 | Phase 2 | Pending |
+| LOAN-06 | Phase 2 | Pending |
+| LOAN-07 | Phase 2 | Pending |
+| LOAN-08 | Phase 2 | Pending |
+| INV-01 | Phase 3 | Pending |
+| INV-02 | Phase 3 | Pending |
+| INV-03 | Phase 3 | Pending |
+| INV-04 | Phase 3 | Pending |
+| INV-05 | Phase 3 | Pending |
+| INV-06 | Phase 3 | Pending |
 
 **Coverage:**
-- v1 requirements: 30 total
-- Complete: 29
-- Pending: 1 (DEPL-03 QA)
+- v1 requirements: 30 total, all Complete (Phase 1)
+- v2 requirements: 14 total, all mapped (8 → Phase 2, 6 → Phase 3)
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-03-26*
-*Last updated: 2026-03-27 — DEPL-01 and DEPL-02 complete; app deployed to Dokploy*
+*Last updated: 2026-04-22 — v2.0 requirements mapped to phases (LOAN-01–08 → Phase 2, INV-01–06 → Phase 3)*

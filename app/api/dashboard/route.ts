@@ -88,9 +88,31 @@ export async function GET(req: NextRequest) {
     })
   }
 
+  // 4. Próximos pagos de préstamos (30 días)
+  const hoy = new Date()
+  const en30 = new Date()
+  en30.setDate(en30.getDate() + 30)
+  const hoyStr = hoy.toISOString().slice(0, 10)
+  const en30Str = en30.toISOString().slice(0, 10)
+
+  const { data: cuotasProx } = await supabase
+    .from('cuotas_prestamo')
+    .select(`
+      id, numero_cuota, monto, fecha_vencimiento, estado,
+      prestamo:prestamos!inner(id, prest_id, contraparte, tipo, created_by, deleted_at)
+    `)
+    .eq('prestamo.created_by', user.id)
+    .is('prestamo.deleted_at', null)
+    .eq('estado', 'PENDIENTE')
+    .gte('fecha_vencimiento', hoyStr)
+    .lte('fecha_vencimiento', en30Str)
+    .order('fecha_vencimiento', { ascending: true })
+    .limit(10)
+
   return NextResponse.json({
     metricas,
     ultimos: ultimos ?? [],
     grafico: graficoData,
+    proximosPagos: cuotasProx ?? [],
   })
 }

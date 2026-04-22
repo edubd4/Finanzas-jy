@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Wallet, TrendingUp, TrendingDown, LineChart, ArrowRight } from 'lucide-react'
+import { Wallet, TrendingUp, TrendingDown, LineChart, ArrowRight, Handshake, Calendar } from 'lucide-react'
 import Link from 'next/link'
 import { MetricCard } from '@/components/dashboard/MetricCard'
 import { AccionesRapidas } from '@/components/dashboard/AccionesRapidas'
@@ -22,6 +22,15 @@ interface Movimiento {
   categoria: { id: string; nombre: string } | null
 }
 
+interface CuotaProxima {
+  id: string
+  numero_cuota: number
+  monto: number
+  fecha_vencimiento: string
+  estado: string
+  prestamo: { id: string; prest_id: string; contraparte: string; tipo: 'acreedor' | 'deudor' }
+}
+
 interface DashboardData {
   metricas: {
     ingresos: number
@@ -31,6 +40,7 @@ interface DashboardData {
   }
   ultimos: Movimiento[]
   grafico: { mes: string; ingresos: number; egresos: number }[]
+  proximosPagos?: CuotaProxima[]
 }
 
 export default function DashboardPage() {
@@ -176,6 +186,41 @@ export default function DashboardPage() {
           )}
         </div>
       </div>
+
+      {/* Próximos pagos de préstamos */}
+      {!cargando && data?.proximosPagos && data.proximosPagos.length > 0 && (
+        <div className="bg-jy-card rounded-xl p-5 border border-jy-purple/20">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Handshake size={16} className="text-jy-purple" />
+              <h2 className="text-jy-text font-semibold">Próximos pagos (30 días)</h2>
+            </div>
+            <Link href="/prestamos" className="text-jy-purple text-sm flex items-center gap-1 hover:underline">
+              Ver préstamos <ArrowRight size={14} />
+            </Link>
+          </div>
+          <div className="space-y-2">
+            {data.proximosPagos.map(c => (
+              <div key={c.id} className="flex items-center gap-3 py-2 border-b border-white/5 last:border-0">
+                <Calendar size={14} className="text-jy-purple flex-shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-jy-text text-sm truncate">
+                    {c.prestamo.contraparte}
+                    <span className="text-jy-secondary text-xs ml-2 font-mono">{c.prestamo.prest_id}</span>
+                  </p>
+                  <p className="text-jy-secondary text-xs">
+                    Cuota {c.numero_cuota} · vence {formatFecha(c.fecha_vencimiento)}
+                    <span className={c.prestamo.tipo === 'acreedor' ? 'text-jy-green ml-2' : 'text-jy-red ml-2'}>
+                      {c.prestamo.tipo === 'acreedor' ? 'a cobrar' : 'a pagar'}
+                    </span>
+                  </p>
+                </div>
+                <span className="text-jy-text font-semibold text-sm">{formatPesos(c.monto)}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Gráfico */}
       {!cargando && data && (

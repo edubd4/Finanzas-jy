@@ -7,6 +7,10 @@ export const createMovimientoSchema = z.object({
   categoria_id: z.string().uuid('Categoría requerida'),
   fecha: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Fecha inválida'),
   descripcion: z.string().max(255).optional(),
+  // Inversiones: campos opcionales
+  fecha_entrada: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().nullable(),
+  fecha_alerta_salida: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().nullable(),
+  monto_esperado: z.number().positive().optional().nullable(),
 })
 
 export const updateMovimientoSchema = createMovimientoSchema.partial()

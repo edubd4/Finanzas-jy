@@ -1,86 +1,85 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: Definition of Done
-current_phase: 02
-status: milestone-complete
-last_updated: "2026-04-21T00:00:00.000Z"
+milestone: v2.0
+milestone_name: Loans Module + Inversiones Enhancement
+current_phase: 2
+status: ready-to-plan
+last_updated: "2026-04-22T00:00:00.000Z"
 progress:
-  total_phases: 3
-  completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  total_phases: 2
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
 ---
 
 # Project State: FinanzasJY
 
-**Last updated:** 2026-04-21
-**Current phase:** 02 (Phase 1 complete — milestone v1.0 done)
-**Stopped at:** v1.0 milestone closed — QA complete, 3 bugs fixed, app handed off to Jose
+**Last updated:** 2026-04-22
+**Current phase:** Phase 2 — Loans Module (ready to plan)
+**Stopped at:** v2.0 roadmap defined; awaiting `/gsd:plan-phase 2`
+**Last activity:** 2026-04-22 — Milestone v2.0 roadmap created (Phase 2: Loans, Phase 3: Inversiones Enhancement)
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-26)
+See: .planning/PROJECT.md (updated 2026-04-22)
 
 **Core value:** Register every financial movement and see where money goes — replaces zero tracking.
-**Current focus:** Phase 02 — Loans + UX Refinements (pending, start after feedback from real usage)
+**Current focus:** v2.0 — Loans module (prestamos + cuotas) + Inversiones enhancement (entry/exit tracking, % return)
 
-## Phase Progress
+## Phase Progress (v2.0)
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 1 | MVP Deployment | **Complete** | 100% — deployed, QA passed, 3 bugs fixed (2026-04-21) |
-| 2 | Loans + UX | Pending | 0% |
-| 3 | Advanced Features | Pending | 0% |
+| 2 | Loans Module | Pending | 0/TBD plans |
+| 3 | Inversiones Enhancement | Pending | 0/TBD plans |
 
-## Phase 1 — What's Done
+## Previous Milestone (v1.0) — Complete
 
-**Infrastructure:**
+| Phase | Name | Status | Closed |
+|-------|------|--------|--------|
+| 1 | MVP Deployment | **Complete** | 2026-04-21 — deployed to Dokploy, QA passed, 3 bugs fixed |
 
-- Next.js 14 App Router, Tailwind jy-* tokens, Supabase (gmhfkxlqhoofuqdnnrow)
-- Middleware auth redirects
-- 3 DB migrations: profiles/historial, movimientos + RLS, categorias + seed
+v1.0 shipped 30 requirements across Auth, Dashboard, Movements, History, Type Views, Settings, Deployment.
 
-**Modules (all code complete):**
+## Phase 2 — Scope Summary
 
-- Auth: login page, session, logout
-- Dashboard: 4 metric cards, PeriodoSelector, AccionesRapidas, últimos 5 movimientos, 6-month bar chart
-- Movements: FormularioMovimiento modal, POST/PATCH/DELETE API, category filtering
-- History: grouped by date, filters (type/category/date), summary, inline edit/delete, search
-- Type views: /ingresos, /egresos, /inversiones
-- Settings: category CRUD with inline edit, activate/deactivate
+**Goal:** Full préstamos tracking — register, auto-generate cuotas, mark paid, dashboard widget, sidebar entry.
 
-**APIs:**
+**Requirements:** LOAN-01 through LOAN-08 (8 total)
 
-- GET/POST `/api/movimientos`
-- GET/PATCH/DELETE `/api/movimientos/[id]`
-- GET `/api/dashboard`
-- GET/POST `/api/categorias`
-- GET/PATCH/DELETE `/api/categorias/[id]`
+**Known work areas:**
+- New DB migration: `prestamos` + `cuotas_prestamo` tables with RLS + soft-delete columns
+- PREST-XXXX ID generation (mirror JY-XXXX pattern)
+- Auto-generate cuotas on loan create (single source of truth — see Key Decision in PROJECT.md)
+- API routes: `/api/prestamos`, `/api/prestamos/[id]`, `/api/cuotas/[id]` (mark paid)
+- Pages: `/prestamos` list + detail, sidebar entry
+- Dashboard widget: upcoming 30 days
+- historial writes for every mutation (reuse existing audit pattern)
 
-**Deployment (01-01-PLAN.md — ALL TASKS COMPLETE):**
+## Phase 3 — Scope Summary
 
-- All 7 missing runtime dependencies added to package.json and package-lock.json
-- `next.config.mjs` updated with `output: 'standalone'`
-- `npm run build` succeeds — `.next/standalone/server.js` exists
-- `Dockerfile` created (multi-stage, node:20-alpine, runs as nextjs:1001, exposes 3000, NEXT_PUBLIC vars as build ARGs)
-- `.dockerignore` created
-- App deployed to Dokploy — login page accessible at production URL
-- All 3 Supabase env vars configured in Dokploy (NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY)
+**Goal:** Inversiones lifecycle — entry/exit tracking, close flow with % retorno, open/closed split.
 
-## Phase 1 — What's Pending
+**Requirements:** INV-01 through INV-06 (6 total)
 
-1. **QA** (01-02-PLAN.md): Manual testing of all modules on desktop and mobile
+**Known work areas:**
+- DB migration: extend `movimientos` (or dedicated table) with `fecha_entrada`, `fecha_alerta_salida`, `monto_esperado`, `monto_final`, `estado` (ABIERTA/CERRADA)
+- Close flow endpoint that captures `monto_final` and computes `% retorno` + `días mantenida`
+- Expandable detail card component
+- Visual alert when `fecha_alerta_salida` reached
+- `/inversiones` view split into abiertas and cerradas sections
 
-## Decisions Made
+## Decisions Made (carrying forward from v1.0)
 
 | Decision | Context | Outcome |
 |----------|---------|---------|
-| --legacy-peer-deps for install | @supabase/ssr has peer conflict with supabase-js v2.100.1 | Required clean reinstall; lock file generated correctly |
-| MovimientoEditar bridge interface | Movimiento has `categoria` object, FormularioMovimiento needs `categoria_id` | Clean type mapping at the click handler |
-| Standalone ENOENT warning on Windows | Known Windows path issue with Next.js standalone | No action needed — Docker builds on Linux |
-| Upgraded Dockerfile to node:20-alpine | node:18 caused npm ci lock file format mismatch with locally generated lock file | node:20 matches local npm version; Docker build succeeds |
-| NEXT_PUBLIC vars as Docker build ARGs | Next.js embeds NEXT_PUBLIC_* at build time — env vars alone not enough | Added ARG declarations in builder stage; Dokploy passes them as build arguments |
+| Service Role client for API writes | Bypasses RLS for server-side mutations | ✓ Good — apply to new tables |
+| Soft deletes only | Immutable history requirement | ✓ Applies to prestamos + cuotas_prestamo (LOAN-07) |
+| historial table for audit trail | Append-only, never mutated | ✓ Applies to loan + cuota mutations (LOAN-08) and inversión close |
+| 3 Supabase clients (browser/server/service) | Each scoped to its responsibility | ✓ Reuse for new endpoints |
+| PREST-XXXX IDs for loans | Consistent with JY-XXXX pattern | Pending v2 — implement in Phase 2 |
+| Auto-generate cuotas on loan create | Single source of truth, prevents manual drift | Pending v2 — implement in Phase 2 |
+| Inversiones `estado` enum (ABIERTA/CERRADA) | Explicit lifecycle, enables close flow + % return | Pending v2 — implement in Phase 3 |
 
 ## Key Patterns (for plan-phase reference)
 
@@ -92,23 +91,38 @@ if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
 // Write pattern (bypasses RLS)
 const serviceClient = createServiceRoleClient()
-await serviceClient.from('movimientos').insert({...})
+await serviceClient.from('prestamos').insert({...})
 
 // Soft delete pattern
-await serviceClient.from('movimientos')
+await serviceClient.from('prestamos')
   .update({ deleted_at: new Date().toISOString() })
   .eq('id', id)
 
 // Query pattern (always filter soft deletes)
-await supabase.from('movimientos').select('*').is('deleted_at', null)
+await supabase.from('prestamos').select('*').is('deleted_at', null)
+
+// Audit trail pattern — mandatory on every mutation
+await serviceClient.from('historial').insert({
+  user_id: user.id,
+  entidad: 'prestamo', // or 'cuota_prestamo', 'movimiento', etc.
+  accion: 'crear' | 'editar' | 'eliminar' | 'pagar' | 'cerrar',
+  entidad_id: row.id,
+  detalle: {...}
+})
 ```
 
 ## Supabase Project
 
 - Project ID: `gmhfkxlqhoofuqdnnrow`
-- Tables: `profiles`, `historial`, `movimientos`, `categorias`
-- RLS: enabled on all tables
+- Existing tables: `profiles`, `historial`, `movimientos`, `categorias`
+- Phase 2 will add: `prestamos`, `cuotas_prestamo`
+- Phase 3 will extend: `movimientos` (or equivalent) with inversión lifecycle columns
+- RLS: enabled on all tables (required for new tables too)
+
+## Session Continuity
+
+**Next action:** `/gsd:plan-phase 2` — decompose Phase 2 (Loans Module) into plans.
 
 ---
 *State initialized: 2026-03-26 via GSD new-project*
-*Last updated: 2026-03-27 — 01-01-PLAN.md complete (all 3 tasks), app deployed to Dokploy production*
+*Last updated: 2026-04-22 — v2.0 roadmap created; Phase 2 (Loans) ready to plan, Phase 3 (Inversiones Enhancement) queued*

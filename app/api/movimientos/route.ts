@@ -60,6 +60,8 @@ export async function POST(req: NextRequest) {
 
   const supabase = await createServiceRoleClient()
 
+  const isInversion = parsed.data.tipo === 'INVERSION'
+
   const { data, error } = await supabase
     .from('movimientos')
     .insert({
@@ -69,6 +71,10 @@ export async function POST(req: NextRequest) {
       categoria_id: parsed.data.categoria_id,
       fecha: parsed.data.fecha,
       descripcion: parsed.data.descripcion ?? null,
+      fecha_entrada: isInversion ? (parsed.data.fecha_entrada ?? parsed.data.fecha) : null,
+      fecha_alerta_salida: isInversion ? (parsed.data.fecha_alerta_salida ?? null) : null,
+      monto_esperado: isInversion ? (parsed.data.monto_esperado ?? null) : null,
+      estado_inversion: isInversion ? 'ABIERTA' : null,
     })
     .select()
     .single()

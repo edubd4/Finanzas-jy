@@ -47,6 +47,8 @@ export function FormularioMovimiento({
   const [categoriaId, setCategoriaId] = useState('')
   const [fecha, setFecha] = useState(new Date().toISOString().split('T')[0])
   const [descripcion, setDescripcion] = useState('')
+  const [fechaAlertaSalida, setFechaAlertaSalida] = useState('')
+  const [montoEsperado, setMontoEsperado] = useState('')
   const [categorias, setCategorias] = useState<Categoria[]>([])
   const [guardando, setGuardando] = useState(false)
   const [error, setError] = useState('')
@@ -65,6 +67,8 @@ export function FormularioMovimiento({
       setCategoriaId('')
       setFecha(new Date().toISOString().split('T')[0])
       setDescripcion('')
+      setFechaAlertaSalida('')
+      setMontoEsperado('')
     }
     setError('')
   }, [movimientoEditar, tipoInicial, abierto])
@@ -93,12 +97,18 @@ export function FormularioMovimiento({
     setGuardando(true)
     setError('')
 
-    const body = {
+    const body: Record<string, unknown> = {
       tipo,
       monto: parseFloat(monto),
       categoria_id: categoriaId,
       fecha,
       descripcion: descripcion || undefined,
+    }
+
+    if (tipo === TIPO_MOVIMIENTO.INVERSION) {
+      body.fecha_entrada = fecha
+      if (fechaAlertaSalida) body.fecha_alerta_salida = fechaAlertaSalida
+      if (montoEsperado) body.monto_esperado = parseFloat(montoEsperado)
     }
 
     try {
@@ -239,6 +249,41 @@ export function FormularioMovimiento({
               )}
             />
           </div>
+
+          {/* Campos extra para Inversiones */}
+          {tipo === TIPO_MOVIMIENTO.INVERSION && !esEdicion && (
+            <div className="space-y-3 p-3 rounded-lg bg-jy-amber/5 border border-jy-amber/20">
+              <p className="text-jy-amber text-[11px] font-medium">Seguimiento de la inversión</p>
+              <div>
+                <label className="text-jy-secondary text-xs font-medium mb-1.5 block">
+                  Fecha de alerta/salida <span className="text-jy-secondary/60">(opcional)</span>
+                </label>
+                <input
+                  type="date"
+                  value={fechaAlertaSalida}
+                  onChange={(e) => setFechaAlertaSalida(e.target.value)}
+                  className="w-full bg-jy-input rounded-lg px-3 py-2.5 text-jy-text text-sm border border-white/10 focus:outline-none focus:ring-1 focus:ring-jy-amber"
+                />
+              </div>
+              <div>
+                <label className="text-jy-secondary text-xs font-medium mb-1.5 block">
+                  Monto esperado <span className="text-jy-secondary/60">(opcional)</span>
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-jy-secondary text-sm">$</span>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value={montoEsperado}
+                    onChange={(e) => setMontoEsperado(e.target.value)}
+                    placeholder="Target de retorno"
+                    className="w-full bg-jy-input rounded-lg pl-8 pr-4 py-2.5 text-jy-text text-sm border border-white/10 focus:outline-none focus:ring-1 focus:ring-jy-amber"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Descripción (opcional) */}
           <div>
