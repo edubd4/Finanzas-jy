@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #0B0E11;
+            color: #ece1d2;
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary": "#402d00",
+                        "surface-container": "#241f16",
+                        "secondary": "#c2c7cf",
+                        "background": "#17130a",
+                        "on-tertiary-fixed-variant": "#004d64",
+                        "tertiary": "#b4e6ff",
+                        "outline": "#9c8f7a",
+                        "surface-bright": "#3e382e",
+                        "tertiary-container": "#59d0ff",
+                        "on-secondary-fixed-variant": "#42474e",
+                        "surface-container-high": "#2f2920",
+                        "on-primary-fixed-variant": "#5c4300",
+                        "primary-fixed-dim": "#f7be33",
+                        "surface-variant": "#3a342a",
+                        "on-background": "#ece1d2",
+                        "tertiary-fixed-dim": "#68d3ff",
+                        "primary": "#ffda91",
+                        "secondary-fixed": "#dee3eb",
+                        "surface": "#17130a",
+                        "surface-dim": "#17130a",
+                        "surface-tint": "#f7be33",
+                        "primary-container": "#f3ba2f",
+                        "on-primary-container": "#674b00",
+                        "on-primary-fixed": "#261a00",
+                        "on-secondary": "#2c3137",
+                        "on-surface-variant": "#d3c5ad",
+                        "secondary-container": "#42474e",
+                        "on-tertiary": "#003546",
+                        "on-tertiary-container": "#005771",
+                        "error-container": "#93000a",
+                        "surface-container-lowest": "#120e06",
+                        "on-surface": "#ece1d2",
+                        "on-tertiary-fixed": "#001f2a",
+                        "error": "#ffb4ab",
+                        "on-error": "#690005",
+                        "inverse-on-surface": "#353026",
+                        "outline-variant": "#4f4634",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-highest": "#3a342a",
+                        "inverse-surface": "#ece1d2",
+                        "on-secondary-fixed": "#171c22",
+                        "tertiary-fixed": "#bee9ff",
+                        "primary-fixed": "#ffdea0",
+                        "secondary-fixed-dim": "#c2c7cf",
+                        "on-secondary-container": "#b1b5bd",
+                        "surface-container-low": "#201b12",
+                        "inverse-primary": "#795900",
+                        "binance-green": "#0ECB81",
+                        "binance-red": "#F6465D"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "unit": "4px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "gutter": "16px",
+                        "margin": "24px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "title-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-base": ["Inter"],
+                        "data-mono": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "title-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "data-mono": ["14px", {"lineHeight": "20px", "fontWeight": "500"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-[#0B0E11]">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 border-r border-[#2B3139] bg-[#0B0E11] flex flex-col py-4 z-50">
+<div class="px-6 mb-8">
+<h1 class="text-lg font-black text-[#F3BA2F] uppercase tracking-wider font-display-lg">FinancePro</h1>
+<p class="text-[10px] text-gray-500 font-label-caps">Trading Edition</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center px-6 py-3 text-gray-400 hover:bg-[#1E2329] hover:text-white transition-all duration-150 active:scale-95 font-label-caps" href="#">
+<span class="material-symbols-outlined mr-3">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center px-6 py-3 bg-[#2B3139] text-[#F3BA2F] border-l-4 border-[#F3BA2F] font-semibold font-label-caps" href="#">
+<span class="material-symbols-outlined mr-3">swap_horiz</span>
+                Movimientos
+            </a>
+<a class="flex items-center px-6 py-3 text-gray-400 hover:bg-[#1E2329] hover:text-white transition-all duration-150 active:scale-95 font-label-caps" href="#">
+<span class="material-symbols-outlined mr-3">trending_up</span>
+                Ingresos
+            </a>
+<a class="flex items-center px-6 py-3 text-gray-400 hover:bg-[#1E2329] hover:text-white transition-all duration-150 active:scale-95 font-label-caps" href="#">
+<span class="material-symbols-outlined mr-3">trending_down</span>
+                Egresos
+            </a>
+<a class="flex items-center px-6 py-3 text-gray-400 hover:bg-[#1E2329] hover:text-white transition-all duration-150 active:scale-95 font-label-caps" href="#">
+<span class="material-symbols-outlined mr-3">account_balance</span>
+                Inversiones
+            </a>
+<a class="flex items-center px-6 py-3 text-gray-400 hover:bg-[#1E2329] hover:text-white transition-all duration-150 active:scale-95 font-label-caps" href="#">
+<span class="material-symbols-outlined mr-3">payments</span>
+                Préstamos
+            </a>
+<a class="flex items-center px-6 py-3 text-gray-400 hover:bg-[#1E2329] hover:text-white transition-all duration-150 active:scale-95 font-label-caps" href="#">
+<span class="material-symbols-outlined mr-3">settings</span>
+                Configuración
+            </a>
+</nav>
+<div class="px-4 mt-auto space-y-4">
+<button class="w-full bg-[#F3BA2F] text-black font-bold py-2.5 rounded-lg flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all text-sm">
+<span class="material-symbols-outlined text-sm">add</span>
+                Nuevo Movimiento
+            </button>
+<div class="border-t border-[#2B3139] pt-4">
+<a class="flex items-center px-2 py-2 text-gray-400 hover:text-white transition-colors text-xs font-label-caps" href="#">
+<span class="material-symbols-outlined mr-3 text-lg">help</span>
+                    Soporte
+                </a>
+<a class="flex items-center px-2 py-2 text-gray-400 hover:text-white transition-colors text-xs font-label-caps" href="#">
+<span class="material-symbols-outlined mr-3 text-lg">logout</span>
+                    Cerrar Sesión
+                </a>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 flex flex-col min-h-screen">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center h-16 px-6 w-full bg-[#1E2329] border-b border-[#2B3139] fixed top-0 z-40 ml-0 left-64 right-0" style="width: calc(100% - 16rem);">
+<div class="flex items-center gap-8">
+<div class="flex gap-6">
+<a class="text-gray-400 hover:text-white transition-colors text-sm font-label-caps" href="#">Hoy</a>
+<a class="text-gray-400 hover:text-white transition-colors text-sm font-label-caps" href="#">Semana</a>
+<a class="text-[#F3BA2F] border-b-2 border-[#F3BA2F] pb-1 text-sm font-label-caps" href="#">Mes</a>
+<a class="text-gray-400 hover:text-white transition-colors text-sm font-label-caps" href="#">Año</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-lg">search</span>
+<input class="bg-[#0B0E11] border border-[#2B3139] text-sm text-white rounded px-10 py-1.5 focus:outline-none focus:border-[#F3BA2F] w-64" placeholder="Buscar movimientos..." type="text"/>
+</div>
+<button class="text-gray-400 hover:text-[#F3BA2F] transition-colors active:opacity-80">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-gray-400 hover:text-[#F3BA2F] transition-colors active:opacity-80">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-[#2B3139]">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="professional headshot of a person with minimalist clean background and soft studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAe7God3h2pngTAKn7J_e-7Ps2Pd2X6e9w5P_MzcZvxpSa0dDXEsuA3d47P6NW8RUQAmj5gMozco8jGIkB1_RmduyVX7G8yKMWMvgOlTlWy3YCD5LYY7dvpElYSIThkIn8ECUKjcKxgnFcgQsq64UxlpPtgIqkr7tzGtKgLZewJ8XGBCl76v1c8fmim27z7NkevRTEhDKAHS6jUW9Syjr3f56FKADAPnLvMyjAvKLhPAxzl-4nbzMiv1TiySNS7B1AX14znANiQgF0"/>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<div class="mt-16 p-6 space-y-6">
+<!-- Period & Summary Boxes -->
+<div class="flex flex-col gap-6">
+<div class="flex items-center justify-between">
+<div>
+<h2 class="text-[#ece1d2] font-display-lg text-2xl tracking-tight">Movimientos</h2>
+<p class="text-gray-500 font-body-sm">Periodo Actual: <span class="text-[#F3BA2F] font-semibold">Abril de 2026</span></p>
+</div>
+<div class="flex gap-2">
+<button class="bg-[#1E2329] border border-[#2B3139] text-[#ece1d2] px-4 py-2 text-xs font-label-caps flex items-center gap-2 hover:bg-[#2B3139] transition-colors rounded">
+<span class="material-symbols-outlined text-sm">calendar_month</span>
+                            Filtrar Fecha
+                        </button>
+<button class="bg-[#1E2329] border border-[#2B3139] text-[#ece1d2] px-4 py-2 text-xs font-label-caps flex items-center gap-2 hover:bg-[#2B3139] transition-colors rounded">
+<span class="material-symbols-outlined text-sm">download</span>
+                            Exportar CSV
+                        </button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Ingresos Card -->
+<div class="bg-[#1E2329] border border-[#2B3139] p-5 rounded-xl">
+<div class="flex items-center justify-between mb-2">
+<span class="text-gray-500 font-label-caps text-[10px]">TOTAL INGRESOS</span>
+<span class="material-symbols-outlined text-[#0ECB81] text-lg">trending_up</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="text-2xl font-bold text-[#0ECB81] font-data-mono">$600.00</span>
+<span class="text-gray-600 text-xs font-data-mono">USD</span>
+</div>
+<div class="mt-2 flex items-center text-[10px] text-gray-500 gap-1">
+<span class="text-[#0ECB81] font-bold">+12%</span> vs mes anterior
+                        </div>
+</div>
+<!-- Egresos Card -->
+<div class="bg-[#1E2329] border border-[#2B3139] p-5 rounded-xl">
+<div class="flex items-center justify-between mb-2">
+<span class="text-gray-500 font-label-caps text-[10px]">TOTAL EGRESOS</span>
+<span class="material-symbols-outlined text-[#F6465D] text-lg">trending_down</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="text-2xl font-bold text-[#F6465D] font-data-mono">$200.00</span>
+<span class="text-gray-600 text-xs font-data-mono">USD</span>
+</div>
+<div class="mt-2 flex items-center text-[10px] text-gray-500 gap-1">
+<span class="text-[#0ECB81] font-bold">-5%</span> vs mes anterior
+                        </div>
+</div>
+<!-- Balance Card -->
+<div class="bg-[#1E2329] border border-[#2B3139] p-5 rounded-xl bg-gradient-to-br from-[#1E2329] to-[#12161b]">
+<div class="flex items-center justify-between mb-2">
+<span class="text-gray-500 font-label-caps text-[10px]">BALANCE NETO</span>
+<span class="material-symbols-outlined text-[#F3BA2F] text-lg">account_balance_wallet</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="text-2xl font-bold text-[#F3BA2F] font-data-mono">$400.00</span>
+<span class="text-gray-600 text-xs font-data-mono">USD</span>
+</div>
+<div class="mt-2 flex items-center text-[10px] text-[#F3BA2F] gap-1">
+<span class="material-symbols-outlined text-[12px] font-variation-settings-fill-1">verified</span>
+                            Periodo en superávit
+                        </div>
+</div>
+</div>
+</div>
+<!-- Table Filters -->
+<div class="bg-[#1E2329] border border-[#2B3139] rounded-xl overflow-hidden">
+<div class="p-4 border-b border-[#2B3139] flex flex-wrap gap-3 items-center justify-between bg-[#191e24]">
+<div class="flex gap-2">
+<button class="bg-[#2B3139] text-[#F3BA2F] px-4 py-1.5 rounded-full text-xs font-semibold">Todos</button>
+<button class="hover:bg-[#2B3139] text-gray-400 px-4 py-1.5 rounded-full text-xs transition-colors">Ingreso</button>
+<button class="hover:bg-[#2B3139] text-gray-400 px-4 py-1.5 rounded-full text-xs transition-colors">Egreso</button>
+<button class="hover:bg-[#2B3139] text-gray-400 px-4 py-1.5 rounded-full text-xs transition-colors">Gasto</button>
+<button class="hover:bg-[#2B3139] text-gray-400 px-4 py-1.5 rounded-full text-xs transition-colors">Inversión</button>
+</div>
+<div class="text-xs text-gray-500 font-label-caps">
+                        Mostrando 12 de 128 movimientos
+                    </div>
+</div>
+<!-- Transaction List (High Density Table) -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-[#0B0E11] text-gray-500 font-label-caps text-[11px] uppercase tracking-wider">
+<th class="px-6 py-3 border-b border-[#2B3139]">Fecha / Concepto</th>
+<th class="px-6 py-3 border-b border-[#2B3139]">Categoría</th>
+<th class="px-6 py-3 border-b border-[#2B3139]">Método</th>
+<th class="px-6 py-3 border-b border-[#2B3139] text-right">Monto</th>
+<th class="px-6 py-3 border-b border-[#2B3139] text-center">Acciones</th>
+</tr>
+</thead>
+<tbody class="font-body-base divide-y divide-[#2B3139]">
+<!-- Date Heading -->
+<tr class="bg-[#12161b]">
+<td class="px-6 py-2 text-[10px] font-bold text-gray-500 uppercase font-label-caps" colspan="5">
+                                    Hoy, 14 de Abril
+                                </td>
+</tr>
+<!-- Transaction 1 -->
+<tr class="hover:bg-[#2B3139]/50 transition-colors group">
+<td class="px-6 py-3">
+<div class="flex flex-col">
+<span class="text-white font-semibold text-sm">Nómina Mensual</span>
+<span class="text-gray-500 text-[10px] font-data-mono">Ref: TXN-001294</span>
+</div>
+</td>
+<td class="px-6 py-3">
+<span class="bg-[#0ECB81]/10 text-[#0ECB81] px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tight">Ingreso</span>
+</td>
+<td class="px-6 py-3 text-gray-400 text-xs">Transferencia Bancaria</td>
+<td class="px-6 py-3 text-right">
+<span class="text-[#0ECB81] font-bold font-data-mono text-sm">+$450.00</span>
+</td>
+<td class="px-6 py-3">
+<div class="flex justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 hover:text-[#F3BA2F] text-gray-500"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-1 hover:text-[#F6465D] text-gray-500"><span class="material-symbols-outlined text-lg">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Transaction 2 -->
+<tr class="hover:bg-[#2B3139]/50 transition-colors group">
+<td class="px-6 py-3">
+<div class="flex flex-col">
+<span class="text-white font-semibold text-sm">Suscripción Netflix</span>
+<span class="text-gray-500 text-[10px] font-data-mono">Ref: TXN-001295</span>
+</div>
+</td>
+<td class="px-6 py-3">
+<span class="bg-[#F6465D]/10 text-[#F6465D] px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tight">Gasto</span>
+</td>
+<td class="px-6 py-3 text-gray-400 text-xs">Tarjeta de Crédito</td>
+<td class="px-6 py-3 text-right">
+<span class="text-[#F6465D] font-bold font-data-mono text-sm">-$15.99</span>
+</td>
+<td class="px-6 py-3">
+<div class="flex justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 hover:text-[#F3BA2F] text-gray-500"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-1 hover:text-[#F6465D] text-gray-500"><span class="material-symbols-outlined text-lg">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Date Heading -->
+<tr class="bg-[#12161b]">
+<td class="px-6 py-2 text-[10px] font-bold text-gray-500 uppercase font-label-caps" colspan="5">
+                                    Ayer, 13 de Abril
+                                </td>
+</tr>
+<!-- Transaction 3 -->
+<tr class="hover:bg-[#2B3139]/50 transition-colors group">
+<td class="px-6 py-3">
+<div class="flex flex-col">
+<span class="text-white font-semibold text-sm">Compra BTC</span>
+<span class="text-gray-500 text-[10px] font-data-mono">Ref: TXN-001288</span>
+</div>
+</td>
+<td class="px-6 py-3">
+<span class="bg-[#F3BA2F]/10 text-[#F3BA2F] px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tight">Inversión</span>
+</td>
+<td class="px-6 py-3 text-gray-400 text-xs">Wallet Spot</td>
+<td class="px-6 py-3 text-right">
+<span class="text-[#F3BA2F] font-bold font-data-mono text-sm">-$100.00</span>
+</td>
+<td class="px-6 py-3">
+<div class="flex justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 hover:text-[#F3BA2F] text-gray-500"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-1 hover:text-[#F6465D] text-gray-500"><span class="material-symbols-outlined text-lg">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Transaction 4 -->
+<tr class="hover:bg-[#2B3139]/50 transition-colors group">
+<td class="px-6 py-3">
+<div class="flex flex-col">
+<span class="text-white font-semibold text-sm">Venta Freelance Logo</span>
+<span class="text-gray-500 text-[10px] font-data-mono">Ref: TXN-001285</span>
+</div>
+</td>
+<td class="px-6 py-3">
+<span class="bg-[#0ECB81]/10 text-[#0ECB81] px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tight">Ingreso</span>
+</td>
+<td class="px-6 py-3 text-gray-400 text-xs">PayPal</td>
+<td class="px-6 py-3 text-right">
+<span class="text-[#0ECB81] font-bold font-data-mono text-sm">+$150.00</span>
+</td>
+<td class="px-6 py-3">
+<div class="flex justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 hover:text-[#F3BA2F] text-gray-500"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-1 hover:text-[#F6465D] text-gray-500"><span class="material-symbols-outlined text-lg">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Transaction 5 -->
+<tr class="hover:bg-[#2B3139]/50 transition-colors group">
+<td class="px-6 py-3">
+<div class="flex flex-col">
+<span class="text-white font-semibold text-sm">Pago de Servicios (Luz)</span>
+<span class="text-gray-500 text-[10px] font-data-mono">Ref: TXN-001284</span>
+</div>
+</td>
+<td class="px-6 py-3">
+<span class="bg-[#F6465D]/10 text-[#F6465D] px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tight">Egreso</span>
+</td>
+<td class="px-6 py-3 text-gray-400 text-xs">Débito Directo</td>
+<td class="px-6 py-3 text-right">
+<span class="text-[#F6465D] font-bold font-data-mono text-sm">-$84.01</span>
+</td>
+<td class="px-6 py-3">
+<div class="flex justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 hover:text-[#F3BA2F] text-gray-500"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="p-1 hover:text-[#F6465D] text-gray-500"><span class="material-symbols-outlined text-lg">delete</span></button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Footer Pagination -->
+<div class="p-4 border-t border-[#2B3139] flex items-center justify-between bg-[#191e24]">
+<div class="flex gap-1">
+<button class="w-8 h-8 flex items-center justify-center rounded bg-[#2B3139] text-[#F3BA2F] text-xs font-bold">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-[#2B3139] text-gray-400 text-xs">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-[#2B3139] text-gray-400 text-xs">3</button>
+<span class="px-2 text-gray-600">...</span>
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-[#2B3139] text-gray-400 text-xs">12</button>
+</div>
+<div class="flex gap-2">
+<button class="px-3 py-1 bg-[#2B3139] rounded text-gray-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-sm">chevron_left</span>
+</button>
+<button class="px-3 py-1 bg-[#2B3139] rounded text-gray-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- FAB (Suppressed based on context rules, but included if needed for primary screens like Home) -->
+<!-- For 'Movimientos', the SideNavBar has the primary CTA 'Nuevo Movimiento' -->
+</body></html>

@@ -150,14 +150,19 @@ export function FormularioMovimiento({
 
       {/* Modal */}
       <div className="relative bg-jy-card w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl border border-white/10 shadow-2xl">
-        {/* Header coloreado por tipo */}
-        <div className={cn('flex items-center justify-between px-5 py-4 rounded-t-2xl sm:rounded-t-2xl border-b border-white/10', bgClass)}>
-          <h2 className="font-semibold text-base">
-            {esEdicion ? 'Editar movimiento' : 'Nuevo movimiento'}
-          </h2>
+        {/* Header */}
+        <div className="flex items-start justify-between px-5 py-4 border-b border-jy-border">
+          <div>
+            <h2 className="font-display font-bold text-base text-jy-accent">
+              {esEdicion ? 'Editar movimiento' : 'Nuevo movimiento'}
+            </h2>
+            <p className="text-[10px] uppercase tracking-widest text-jy-secondary mt-0.5">
+              Registro de transacción financiera
+            </p>
+          </div>
           <button
             onClick={onCerrar}
-            className="p-1 rounded hover:bg-white/10 transition-colors"
+            className="p-1 rounded hover:bg-jy-input text-jy-secondary hover:text-jy-text transition-colors"
             aria-label="Cerrar"
           >
             <X size={18} />
@@ -312,13 +317,13 @@ export function FormularioMovimiento({
           <button
             type="submit"
             disabled={guardando}
-            className={cn(
-              'w-full py-3 rounded-lg font-semibold text-sm transition-colors disabled:opacity-60',
-              bgClass || 'bg-jy-accent text-white hover:bg-jy-accent/90'
-            )}
+            className="w-full py-3 rounded font-semibold text-sm uppercase tracking-wider bg-jy-accent text-jy-bg hover:bg-jy-accent-hi transition-colors disabled:opacity-60"
           >
             {guardando ? 'Guardando...' : esEdicion ? 'Guardar cambios' : 'Guardar movimiento'}
           </button>
+          <p className="text-[10px] uppercase tracking-widest text-jy-secondary text-center">
+            La transacción será procesada e impactará en su balance inmediatamente
+          </p>
         </form>
       </div>
     </div>

@@ -9,21 +9,26 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Paleta FinanzasJY — prefijo jy-
-        "jy-bg":        "#0d1b2a",   // Fondo principal
-        "jy-card":      "#112240",   // Cards y paneles
-        "jy-input":     "#1a3358",   // Inputs y áreas interactivas
-        "jy-accent":    "#3b82f6",   // Azul principal (CTAs)
-        "jy-green":     "#22c55e",   // Ingresos, positivo
-        "jy-red":       "#ef4444",   // Egresos/gastos, negativo
-        "jy-amber":     "#f59e0b",   // Inversiones, alertas
-        "jy-purple":    "#a855f7",   // Préstamos
-        "jy-text":      "#e2e8f0",   // Texto principal
-        "jy-secondary": "#94a3b8",   // Texto secundario
+        // FinanzasJY — "Professional Dark Trade" palette
+        "jy-bg":        "#120e06",   // Fondo principal (deepest charcoal)
+        "jy-card":      "#201b12",   // Cards y paneles
+        "jy-input":     "#2f2920",   // Inputs, interacción hover
+        "jy-border":    "#4f4634",   // Outline variant (1px borders)
+        "jy-accent":    "#f3ba2f",   // Binance Yellow — CTAs, highlights
+        "jy-accent-hi": "#ffda91",   // Accent claro (hover, ring)
+        "jy-green":     "#0ecb81",   // INGRESO — verde financiero
+        "jy-red":       "#f6465d",   // EGRESO/GASTO — rojo financiero
+        "jy-amber":     "#f59e0b",   // INVERSION
+        "jy-purple":    "#a855f7",   // PRESTAMO
+        "jy-text":      "#ece1d2",   // Texto principal
+        "jy-secondary": "#9c8f7a",   // Texto secundario
       },
       fontFamily: {
-        display: ["var(--font-fraunces)", "serif"],
-        sans:    ["var(--font-dm-sans)", "sans-serif"],
+        display: ["var(--font-inter)", "sans-serif"],
+        sans:    ["var(--font-inter)", "sans-serif"],
+      },
+      borderRadius: {
+        DEFAULT: "0.25rem",
       },
     },
   },

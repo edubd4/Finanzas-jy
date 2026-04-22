@@ -84,8 +84,8 @@ export function GraficoBarras({ datos }: GraficoBarrasProps) {
             }
             wrapperStyle={{ fontSize: 12, color: '#94a3b8' }}
           />
-          <Bar dataKey="ingresos" fill="#22c55e" radius={[4, 4, 0, 0]} />
-          <Bar dataKey="egresos" fill="#ef4444" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="ingresos" fill="#0ecb81" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="egresos" fill="#f6465d" radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

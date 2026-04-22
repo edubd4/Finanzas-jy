@@ -32,8 +32,9 @@ export default function LoginPage() {
 
         {/* Logo / título */}
         <div className="mb-8 text-center">
-          <h1 className="font-display text-3xl font-bold text-jy-accent">FinanzasJY</h1>
-          <p className="text-jy-secondary text-sm mt-2">Gestión financiera personal</p>
+          <h1 className="font-display text-3xl font-extrabold tracking-tight text-jy-accent">FINANCEPRO</h1>
+          <p className="text-jy-secondary text-[10px] uppercase tracking-widest mt-1">Trading Edition</p>
+          <p className="text-jy-secondary text-sm mt-3">Gestión financiera personal</p>
         </div>
 
         {/* Card de login */}
@@ -80,7 +81,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-jy-accent hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium rounded-lg px-4 py-2.5 text-sm transition-colors mt-2"
+              className="w-full bg-jy-accent hover:bg-jy-accent-hi disabled:opacity-50 disabled:cursor-not-allowed text-jy-bg font-semibold uppercase tracking-wider rounded px-4 py-2.5 text-sm transition-colors mt-2"
             >
               {loading ? 'Ingresando...' : 'Ingresar'}
             </button>

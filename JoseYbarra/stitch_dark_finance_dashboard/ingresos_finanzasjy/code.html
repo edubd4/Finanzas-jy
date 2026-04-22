@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0B0E11;
+            color: #ece1d2;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom scrollbar for technical feel */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B0E11;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2B3139;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary": "#402d00",
+                        "surface-container": "#241f16",
+                        "secondary": "#c2c7cf",
+                        "background": "#17130a",
+                        "on-tertiary-fixed-variant": "#004d64",
+                        "tertiary": "#b4e6ff",
+                        "outline": "#9c8f7a",
+                        "surface-bright": "#3e382e",
+                        "tertiary-container": "#59d0ff",
+                        "on-secondary-fixed-variant": "#42474e",
+                        "surface-container-high": "#2f2920",
+                        "on-primary-fixed-variant": "#5c4300",
+                        "primary-fixed-dim": "#f7be33",
+                        "surface-variant": "#3a342a",
+                        "on-background": "#ece1d2",
+                        "tertiary-fixed-dim": "#68d3ff",
+                        "primary": "#ffda91",
+                        "secondary-fixed": "#dee3eb",
+                        "surface": "#17130a",
+                        "surface-dim": "#17130a",
+                        "surface-tint": "#f7be33",
+                        "primary-container": "#f3ba2f",
+                        "on-primary-container": "#674b00",
+                        "on-primary-fixed": "#261a00",
+                        "on-secondary": "#2c3137",
+                        "on-surface-variant": "#d3c5ad",
+                        "secondary-container": "#42474e",
+                        "on-tertiary": "#003546",
+                        "on-tertiary-container": "#005771",
+                        "error-container": "#93000a",
+                        "surface-container-lowest": "#120e06",
+                        "on-surface": "#ece1d2",
+                        "on-tertiary-fixed": "#001f2a",
+                        "error": "#ffb4ab",
+                        "on-error": "#690005",
+                        "inverse-on-surface": "#353026",
+                        "outline-variant": "#4f4634",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-highest": "#3a342a",
+                        "inverse-surface": "#ece1d2",
+                        "on-secondary-fixed": "#171c22",
+                        "tertiary-fixed": "#bee9ff",
+                        "primary-fixed": "#ffdea0",
+                        "secondary-fixed-dim": "#c2c7cf",
+                        "on-secondary-container": "#b1b5bd",
+                        "surface-container-low": "#201b12",
+                        "inverse-primary": "#795900",
+                        "trading-green": "#0ECB81",
+                        "trading-red": "#F6465D"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "unit": "4px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "gutter": "16px",
+                        "margin": "24px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "title-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-base": ["Inter"],
+                        "data-mono": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "title-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "data-mono": ["14px", {"lineHeight": "20px", "fontWeight": "500"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-[#0B0E11] text-[#ece1d2] selection:bg-[#F3BA2F] selection:text-black">
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 border-r border-[#2B3139] bg-[#0B0E11] flex flex-col h-full py-4 z-50 hidden md:flex">
+<div class="px-6 mb-8">
+<h1 class="text-lg font-black text-[#F3BA2F] uppercase tracking-wider font-label-caps">FinancePro</h1>
+<p class="text-[10px] text-gray-500 font-label-caps tracking-widest mt-1">TRADING EDITION</p>
+</div>
+<nav class="flex-1 space-y-1">
+<div class="px-4 mb-2">
+<button class="w-full bg-[#F3BA2F] text-black py-2.5 rounded-lg font-title-sm flex items-center justify-center gap-2 active:scale-95 transition-all duration-150">
+<span class="material-symbols-outlined text-[20px]">add_circle</span>
+                    Nuevo Movimiento
+                </button>
+</div>
+<a class="flex items-center px-6 py-3 text-gray-400 hover:bg-[#1E2329] hover:text-white transition-all duration-150 font-['Inter'] text-sm tracking-tight" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="dashboard">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center px-6 py-3 text-gray-400 hover:bg-[#1E2329] hover:text-white transition-all duration-150 font-['Inter'] text-sm tracking-tight" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="swap_horiz">swap_horiz</span>
+                Movimientos
+            </a>
+<!-- Active Tab: Ingresos -->
+<a class="flex items-center px-6 py-3 bg-[#2B3139] text-[#F3BA2F] border-l-4 border-[#F3BA2F] font-semibold font-['Inter'] text-sm tracking-tight" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="trending_up">trending_up</span>
+                Ingresos
+            </a>
+<a class="flex items-center px-6 py-3 text-gray-400 hover:bg-[#1E2329] hover:text-white transition-all duration-150 font-['Inter'] text-sm tracking-tight" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="trending_down">trending_down</span>
+                Egresos
+            </a>
+<a class="flex items-center px-6 py-3 text-gray-400 hover:bg-[#1E2329] hover:text-white transition-all duration-150 font-['Inter'] text-sm tracking-tight" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="account_balance">account_balance</span>
+                Inversiones
+            </a>
+<a class="flex items-center px-6 py-3 text-gray-400 hover:bg-[#1E2329] hover:text-white transition-all duration-150 font-['Inter'] text-sm tracking-tight" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="payments">payments</span>
+                Préstamos
+            </a>
+<a class="flex items-center px-6 py-3 text-gray-400 hover:bg-[#1E2329] hover:text-white transition-all duration-150 font-['Inter'] text-sm tracking-tight" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="settings">settings</span>
+                Configuración
+            </a>
+</nav>
+<footer class="mt-auto border-t border-[#2B3139] pt-4">
+<a class="flex items-center px-6 py-3 text-gray-400 hover:bg-[#1E2329] hover:text-white transition-all duration-150 font-['Inter'] text-sm tracking-tight" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="help">help</span>
+                Soporte
+            </a>
+<a class="flex items-center px-6 py-3 text-gray-400 hover:bg-[#1E2329] hover:text-white transition-all duration-150 font-['Inter'] text-sm tracking-tight" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="logout">logout</span>
+                Cerrar Sesión
+            </a>
+</footer>
+</aside>
+<!-- Main Content Area -->
+<main class="md:ml-64 min-h-screen">
+<!-- TopAppBar -->
+<header class="bg-[#1E2329] border-b border-[#2B3139] h-16 px-6 w-full flex justify-between items-center sticky top-0 z-40">
+<div class="flex items-center gap-8">
+<span class="md:hidden text-xl font-bold text-[#F3BA2F] font-['Inter']">FinancePro</span>
+<nav class="hidden lg:flex items-center gap-6">
+<a class="text-gray-400 hover:text-white transition-colors font-['Inter'] text-sm" href="#">Hoy</a>
+<a class="text-gray-400 hover:text-white transition-colors font-['Inter'] text-sm" href="#">Semana</a>
+<a class="text-[#F3BA2F] border-b-2 border-[#F3BA2F] pb-1 font-['Inter'] text-sm" href="#">Mes</a>
+<a class="text-gray-400 hover:text-white transition-colors font-['Inter'] text-sm" href="#">Año</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden sm:flex bg-[#0B0E11] px-3 py-1.5 rounded border border-[#2B3139] items-center gap-2">
+<span class="material-symbols-outlined text-gray-500 text-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm text-gray-300 w-32 xl:w-64" placeholder="Buscar..." type="text"/>
+</div>
+<button class="text-gray-400 hover:text-white cursor-pointer active:opacity-80 transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-gray-400 hover:text-white cursor-pointer active:opacity-80 transition-colors">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-[#2B3139] overflow-hidden border border-[#F3BA2F]">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="close up headshot of professional male trader with sharp features wearing a minimalist dark shirt, soft tech office lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNS9qjwas7dN2HqaSYg0vqRillhv-JBcYg29Mn8kEIgDyWQmpWkGBteZowCwCfy0rYiOcYrdLL2o_F-vSg5AMLN9UM4qIyrd2oMxYsvFPwp9qZZ6zwHIvnwJGyP_XTV9PD160rsxEXVvDOY4oNXOyoDsehp92c9Fu13sbgky9jxzmfgkT9tEIlPWCPCdILM2Tge0pL2pZO5KgzSwKk0JGB0h_AKbwz0Pr9dbdpjZ32AxSen4lCO3_mZ4T8U3JKvG8-jeQ0xzThIDA"/>
+</div>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="p-6 max-w-7xl mx-auto">
+<!-- Hero Bento Header -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+<!-- Total Income Card -->
+<div class="lg:col-span-2 bg-[#1E2329] border border-[#2B3139] p-8 rounded-xl relative overflow-hidden flex flex-col justify-between">
+<div class="absolute top-0 right-0 p-8 opacity-10">
+<span class="material-symbols-outlined text-[120px] text-[#0ECB81]" style="font-variation-settings: 'FILL' 1;">trending_up</span>
+</div>
+<div>
+<p class="font-label-caps text-gray-400 mb-2">RESUMEN DE INGRESOS</p>
+<h2 class="font-display-lg text-white">Ingresos del período</h2>
+<div class="flex items-baseline gap-4 mt-6">
+<span class="text-5xl font-black text-[#0ECB81] font-data-mono tracking-tighter">$600.00</span>
+<span class="text-[#0ECB81] bg-[#0ECB81]/10 px-2 py-1 rounded text-xs font-bold">+12.5% vs prev.</span>
+</div>
+</div>
+<div class="mt-8 flex gap-3 overflow-x-auto pb-2">
+<div class="bg-[#0B0E11] border border-[#2B3139] p-4 rounded min-w-[140px]">
+<p class="text-[10px] text-gray-500 font-label-caps uppercase">Salario</p>
+<p class="text-lg font-bold text-white font-data-mono">$450</p>
+</div>
+<div class="bg-[#0B0E11] border border-[#2B3139] p-4 rounded min-w-[140px]">
+<p class="text-[10px] text-gray-500 font-label-caps uppercase">Trading</p>
+<p class="text-lg font-bold text-white font-data-mono">$120</p>
+</div>
+<div class="bg-[#0B0E11] border border-[#2B3139] p-4 rounded min-w-[140px]">
+<p class="text-[10px] text-gray-500 font-label-caps uppercase">Freelance</p>
+<p class="text-lg font-bold text-white font-data-mono">$30</p>
+</div>
+</div>
+</div>
+<!-- Visual Breakdown Card -->
+<div class="bg-[#1E2329] border border-[#2B3139] p-6 rounded-xl flex flex-col items-center justify-center text-center">
+<div class="w-32 h-32 rounded-full border-8 border-[#0ECB81] border-r-[#2B3139] flex items-center justify-center mb-4">
+<span class="text-xl font-bold text-white">75%</span>
+</div>
+<p class="font-title-sm text-white">Objetivo Mensual</p>
+<p class="text-sm text-gray-400 mt-2">Faltan $200 para alcanzar la meta de $800 definida en Configuración.</p>
+<button class="mt-6 text-[#F3BA2F] text-sm font-semibold hover:underline cursor-pointer">Ver proyecciones</button>
+</div>
+</div>
+<!-- List Section -->
+<div class="bg-[#1E2329] border border-[#2B3139] rounded-xl overflow-hidden">
+<div class="p-6 border-b border-[#2B3139] flex justify-between items-center">
+<h3 class="font-title-sm text-white">Fuentes de Ingreso Detalladas</h3>
+<div class="flex gap-2">
+<button class="p-2 bg-[#0B0E11] border border-[#2B3139] text-gray-400 hover:text-white rounded">
+<span class="material-symbols-outlined text-sm">filter_list</span>
+</button>
+<button class="p-2 bg-[#0B0E11] border border-[#2B3139] text-gray-400 hover:text-white rounded">
+<span class="material-symbols-outlined text-sm">download</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-[#0B0E11]/50">
+<th class="px-6 py-4 font-label-caps text-gray-500">FUENTE</th>
+<th class="px-6 py-4 font-label-caps text-gray-500">CATEGORÍA</th>
+<th class="px-6 py-4 font-label-caps text-gray-500">FECHA</th>
+<th class="px-6 py-4 font-label-caps text-gray-500">ESTADO</th>
+<th class="px-6 py-4 font-label-caps text-gray-500 text-right">CANTIDAD</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#2B3139]">
+<tr class="hover:bg-[#2B3139] transition-colors group">
+<td class="px-6 py-4 flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-[#F3BA2F]/10 flex items-center justify-center text-[#F3BA2F]">
+<span class="material-symbols-outlined">work</span>
+</div>
+<span class="font-semibold text-white">Salario Tech Corp</span>
+</td>
+<td class="px-6 py-4">
+<span class="text-xs px-2 py-0.5 bg-[#2B3139] text-gray-300 rounded">Nómina</span>
+</td>
+<td class="px-6 py-4 text-sm text-gray-400 font-data-mono">2023-11-01</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1.5 text-[10px] uppercase font-bold text-[#0ECB81]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#0ECB81]"></span> Liquidado
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right font-data-mono font-bold text-[#0ECB81]">+$450.00</td>
+</tr>
+<tr class="hover:bg-[#2B3139] transition-colors group">
+<td class="px-6 py-4 flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-[#F3BA2F]/10 flex items-center justify-center text-[#F3BA2F]">
+<span class="material-symbols-outlined">currency_bitcoin</span>
+</div>
+<span class="font-semibold text-white">Ganancias BTC Spot</span>
+</td>
+<td class="px-6 py-4">
+<span class="text-xs px-2 py-0.5 bg-[#2B3139] text-gray-300 rounded">Trading</span>
+</td>
+<td class="px-6 py-4 text-sm text-gray-400 font-data-mono">2023-10-28</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1.5 text-[10px] uppercase font-bold text-[#0ECB81]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#0ECB81]"></span> Liquidado
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right font-data-mono font-bold text-[#0ECB81]">+$85.50</td>
+</tr>
+<tr class="hover:bg-[#2B3139] transition-colors group">
+<td class="px-6 py-4 flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-[#F3BA2F]/10 flex items-center justify-center text-[#F3BA2F]">
+<span class="material-symbols-outlined">code</span>
+</div>
+<span class="font-semibold text-white">Freelance Landing Page</span>
+</td>
+<td class="px-6 py-4">
+<span class="text-xs px-2 py-0.5 bg-[#2B3139] text-gray-300 rounded">Servicios</span>
+</td>
+<td class="px-6 py-4 text-sm text-gray-400 font-data-mono">2023-10-25</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1.5 text-[10px] uppercase font-bold text-[#0ECB81]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#0ECB81]"></span> Liquidado
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right font-data-mono font-bold text-[#0ECB81]">+$30.00</td>
+</tr>
+<tr class="hover:bg-[#2B3139] transition-colors group">
+<td class="px-6 py-4 flex items-center gap-3">
+<div class="w-10 h-10 rounded bg-[#F3BA2F]/10 flex items-center justify-center text-[#F3BA2F]">
+<span class="material-symbols-outlined">show_chart</span>
+</div>
+<span class="font-semibold text-white">Dividendos Mensuales</span>
+</td>
+<td class="px-6 py-4">
+<span class="text-xs px-2 py-0.5 bg-[#2B3139] text-gray-300 rounded">Inversiones</span>
+</td>
+<td class="px-6 py-4 text-sm text-gray-400 font-data-mono">2023-10-22</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1.5 text-[10px] uppercase font-bold text-[#0ECB81]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#0ECB81]"></span> Liquidado
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right font-data-mono font-bold text-[#0ECB81]">+$34.50</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-4 bg-[#0B0E11]/30 flex justify-center">
+<button class="text-sm font-semibold text-gray-500 hover:text-white transition-colors">Cargar más movimientos</button>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar for Mobile -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-[#1E2329] border-t border-[#2B3139] flex justify-around items-center h-16 z-50">
+<a class="flex flex-col items-center justify-center text-gray-400 p-2" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-[10px] mt-1">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#F3BA2F] p-2" href="#">
+<span class="material-symbols-outlined" data-icon="trending_up" style="font-variation-settings: 'FILL' 1;">trending_up</span>
+<span class="text-[10px] mt-1">Ingresos</span>
+</a>
+<div class="-mt-8">
+<button class="bg-[#F3BA2F] text-black h-12 w-12 rounded-full shadow-lg flex items-center justify-center active:scale-90 transition-transform">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+<a class="flex flex-col items-center justify-center text-gray-400 p-2" href="#">
+<span class="material-symbols-outlined" data-icon="trending_down">trending_down</span>
+<span class="text-[10px] mt-1">Egresos</span>
+</a>
+<a class="flex flex-col items-center justify-center text-gray-400 p-2" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-[10px] mt-1">Más</span>
+</a>
+</nav>
+</body></html>

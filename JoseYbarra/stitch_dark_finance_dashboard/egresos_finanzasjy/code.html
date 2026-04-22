@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary": "#402d00",
+                        "surface-container": "#241f16",
+                        "secondary": "#c2c7cf",
+                        "background": "#17130a",
+                        "on-tertiary-fixed-variant": "#004d64",
+                        "tertiary": "#b4e6ff",
+                        "outline": "#9c8f7a",
+                        "surface-bright": "#3e382e",
+                        "tertiary-container": "#59d0ff",
+                        "on-secondary-fixed-variant": "#42474e",
+                        "surface-container-high": "#2f2920",
+                        "on-primary-fixed-variant": "#5c4300",
+                        "primary-fixed-dim": "#f7be33",
+                        "surface-variant": "#3a342a",
+                        "on-background": "#ece1d2",
+                        "tertiary-fixed-dim": "#68d3ff",
+                        "primary": "#ffda91",
+                        "secondary-fixed": "#dee3eb",
+                        "surface": "#17130a",
+                        "surface-dim": "#17130a",
+                        "surface-tint": "#f7be33",
+                        "primary-container": "#f3ba2f",
+                        "on-primary-container": "#674b00",
+                        "on-primary-fixed": "#261a00",
+                        "on-secondary": "#2c3137",
+                        "on-surface-variant": "#d3c5ad",
+                        "secondary-container": "#42474e",
+                        "on-tertiary": "#003546",
+                        "on-tertiary-container": "#005771",
+                        "error-container": "#93000a",
+                        "surface-container-lowest": "#120e06",
+                        "on-surface": "#ece1d2",
+                        "on-tertiary-fixed": "#001f2a",
+                        "error": "#ffb4ab",
+                        "on-error": "#690005",
+                        "inverse-on-surface": "#353026",
+                        "outline-variant": "#4f4634",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-highest": "#3a342a",
+                        "inverse-surface": "#ece1d2",
+                        "on-secondary-fixed": "#171c22",
+                        "tertiary-fixed": "#bee9ff",
+                        "primary-fixed": "#ffdea0",
+                        "secondary-fixed-dim": "#c2c7cf",
+                        "on-secondary-container": "#b1b5bd",
+                        "surface-container-low": "#201b12",
+                        "inverse-primary": "#795900"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "unit": "4px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "gutter": "16px",
+                        "margin": "24px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "title-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-base": ["Inter"],
+                        "data-mono": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "title-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "data-mono": ["14px", {"lineHeight": "20px", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #0B0E11; /* From JSON Background */
+            color: #ece1d2;
+        }
+        .red-accent-text { color: #F6465D; } /* Specific Red for Expenditures as requested */
+    </style>
+</head>
+<body class="font-body-base antialiased">
+<!-- SideNavBar Shell -->
+<aside class="hidden md:flex flex-col h-screen w-64 fixed left-0 top-0 border-r border-[#2B3139] bg-[#0B0E11] py-4 z-50">
+<div class="px-6 mb-8">
+<h1 class="text-lg font-black text-[#F3BA2F] uppercase tracking-wider">FinancePro</h1>
+<p class="text-[10px] text-gray-500 font-label-caps">Trading Edition</p>
+</div>
+<nav class="flex-1 flex flex-col">
+<!-- Nav Items Mapping -->
+<div class="flex flex-col space-y-1">
+<a class="flex items-center px-6 py-3 text-gray-400 hover:bg-[#1E2329] transition-all duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="dashboard">dashboard</span>
+<span class="font-label-caps">Dashboard</span>
+</a>
+<a class="flex items-center px-6 py-3 text-gray-400 hover:bg-[#1E2329] transition-all duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="swap_horiz">swap_horiz</span>
+<span class="font-label-caps">Movimientos</span>
+</a>
+<a class="flex items-center px-6 py-3 text-gray-400 hover:bg-[#1E2329] transition-all duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="trending_up">trending_up</span>
+<span class="font-label-caps">Ingresos</span>
+</a>
+<!-- ACTIVE TAB: Egresos -->
+<a class="flex items-center px-6 py-3 bg-[#2B3139] text-[#F3BA2F] border-l-4 border-[#F3BA2F] font-semibold transition-all duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="trending_down">trending_down</span>
+<span class="font-label-caps">Egresos</span>
+</a>
+<a class="flex items-center px-6 py-3 text-gray-400 hover:bg-[#1E2329] transition-all duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="account_balance">account_balance</span>
+<span class="font-label-caps">Inversiones</span>
+</a>
+<a class="flex items-center px-6 py-3 text-gray-400 hover:bg-[#1E2329] transition-all duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="payments">payments</span>
+<span class="font-label-caps">Préstamos</span>
+</a>
+<a class="flex items-center px-6 py-3 text-gray-400 hover:bg-[#1E2329] transition-all duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="settings">settings</span>
+<span class="font-label-caps">Configuración</span>
+</a>
+</div>
+<div class="px-6 mt-8">
+<button class="w-full bg-[#F3BA2F] text-black font-bold py-3 px-4 rounded-[4px] font-label-caps transition-transform active:scale-95">
+                    Nuevo Movimiento
+                </button>
+</div>
+</nav>
+<div class="px-6 pt-4 border-t border-[#2B3139]">
+<a class="flex items-center py-2 text-gray-400 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="help">help</span>
+<span class="font-label-caps">Soporte</span>
+</a>
+<a class="flex items-center py-2 text-gray-400 hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined mr-3" data-icon="logout">logout</span>
+<span class="font-label-caps">Cerrar Sesión</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="md:ml-64 min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center h-16 px-6 w-full bg-[#1E2329] border-b border-[#2B3139] sticky top-0 z-40">
+<div class="flex items-center space-x-6 h-full">
+<span class="text-xl font-bold text-[#F3BA2F] md:hidden">FinancePro</span>
+<nav class="hidden sm:flex space-x-6 h-full items-center">
+<a class="font-label-caps text-gray-400 hover:text-white transition-colors" href="#">Hoy</a>
+<a class="font-label-caps text-gray-400 hover:text-white transition-colors" href="#">Semana</a>
+<a class="font-label-caps text-[#F3BA2F] border-b-2 border-[#F3BA2F] pb-1 h-full flex items-center mt-0.5" href="#">Mes</a>
+<a class="font-label-caps text-gray-400 hover:text-white transition-colors" href="#">Año</a>
+</nav>
+</div>
+<div class="flex items-center space-x-4">
+<div class="relative hidden lg:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm" data-icon="search">search</span>
+<input class="bg-[#0B0E11] border border-[#2B3139] text-sm rounded-[4px] pl-10 pr-4 py-1.5 focus:outline-none focus:border-[#F3BA2F] text-white w-64" placeholder="Buscar movimientos..." type="text"/>
+</div>
+<button class="text-gray-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-gray-400 hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-[#2B3139] flex items-center justify-center overflow-hidden border border-[#2B3139]">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="close-up portrait of a professional trader in a dark workspace with soft ambient light on their face" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKfBIKvuDnHrsuCxjciUJsF6FwsEw1vlY1GVW_Hcee1qu5BWf6H-LyJuLfEVg63Uu4mr0cEKAG0QDBZdsXVaPxXdlSYf-DfBT4M6UhcblY9hv1QSwpDx0LbSOlFdHYqnwD2SvB-2_0Ge-Qn6fthhh4P6W3cKQKHsn9F9MR8XgGEFLKhKf1glwcttoS2dCAGNpMOaCoHVZ7-7Hfkc-_dwE-sAYCnmnZ_SzqgVr7GI5mzrpsns3s14zIMmP_qgSo5IbTg9x9VUBB6U0"/>
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<div class="p-6 space-y-8 max-w-7xl mx-auto w-full">
+<!-- Header Section -->
+<section class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h2 class="font-display-lg text-white">Egresos</h2>
+<p class="text-gray-400 font-body-sm">Resumen detallado de tus salidas de capital de este mes.</p>
+</div>
+<div class="flex gap-2">
+<button class="bg-[#1E2329] border border-[#2B3139] px-4 py-2 rounded-lg font-label-caps text-white hover:bg-[#2B3139] transition-colors flex items-center">
+<span class="material-symbols-outlined mr-2 text-sm" data-icon="filter_list">filter_list</span> Filtrar
+                    </button>
+<button class="bg-[#1E2329] border border-[#2B3139] px-4 py-2 rounded-lg font-label-caps text-white hover:bg-[#2B3139] transition-colors flex items-center">
+<span class="material-symbols-outlined mr-2 text-sm" data-icon="download">download</span> Exportar
+                    </button>
+</div>
+</section>
+<!-- Summary Bento Grid -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Combined Total (Highlight Card) -->
+<div class="bg-[#1E2329] border border-[#2B3139] p-6 rounded-xl flex flex-col justify-between h-40">
+<div class="flex justify-between items-start">
+<span class="font-label-caps text-gray-400">Total Combinado</span>
+<span class="material-symbols-outlined red-accent-text" data-icon="payments">payments</span>
+</div>
+<div>
+<div class="font-display-lg red-accent-text font-data-mono">$200.00</div>
+<div class="text-[10px] text-gray-500 font-label-caps mt-1 flex items-center">
+<span class="material-symbols-outlined text-[12px] mr-1" data-icon="arrow_upward">arrow_upward</span> 12.5% respecto al mes anterior
+                        </div>
+</div>
+</div>
+<!-- Fixed Expenses -->
+<div class="bg-[#1E2329] border border-[#2B3139] p-6 rounded-xl flex flex-col justify-between h-40">
+<div class="flex justify-between items-start">
+<span class="font-label-caps text-gray-400">Gastos Fijos</span>
+<span class="material-symbols-outlined text-gray-500" data-icon="lock">lock</span>
+</div>
+<div>
+<div class="font-headline-md text-white font-data-mono">$200.00</div>
+<div class="w-full bg-[#0B0E11] h-1 rounded-full mt-3">
+<div class="bg-[#F3BA2F] h-full rounded-full" style="width: 100%;"></div>
+</div>
+</div>
+</div>
+<!-- Variable Expenses -->
+<div class="bg-[#1E2329] border border-[#2B3139] p-6 rounded-xl flex flex-col justify-between h-40">
+<div class="flex justify-between items-start">
+<span class="font-label-caps text-gray-400">Gastos Variables</span>
+<span class="material-symbols-outlined text-gray-500" data-icon="bolt">bolt</span>
+</div>
+<div>
+<div class="font-headline-md text-gray-500 font-data-mono">$0.00</div>
+<div class="w-full bg-[#0B0E11] h-1 rounded-full mt-3">
+<div class="bg-gray-700 h-full rounded-full" style="width: 0%;"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- List of Transactions -->
+<section class="bg-[#1E2329] border border-[#2B3139] rounded-xl overflow-hidden">
+<div class="px-6 py-4 border-b border-[#2B3139] flex justify-between items-center">
+<h3 class="font-title-sm text-white">Transacciones Recientes</h3>
+<div class="flex items-center space-x-2">
+<span class="font-label-caps text-gray-500">Ordenar por:</span>
+<select class="bg-transparent border-none text-xs font-label-caps text-white focus:ring-0 cursor-pointer">
+<option>Fecha (Reciente)</option>
+<option>Monto (Mayor)</option>
+<option>Categoría</option>
+</select>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-[#0B0E11] border-b border-[#2B3139]">
+<th class="px-6 py-3 font-label-caps text-gray-500">Concepto</th>
+<th class="px-6 py-3 font-label-caps text-gray-500">Categoría</th>
+<th class="px-6 py-3 font-label-caps text-gray-500">Fecha</th>
+<th class="px-6 py-3 font-label-caps text-gray-500">Tipo</th>
+<th class="px-6 py-3 font-label-caps text-gray-500 text-right">Monto</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#2B3139]">
+<!-- Row 1 -->
+<tr class="hover:bg-[#2B3139] transition-colors cursor-pointer group">
+<td class="px-6 py-4">
+<div class="flex items-center">
+<div class="w-8 h-8 rounded bg-[#F3BA2F]/10 flex items-center justify-center mr-3">
+<span class="material-symbols-outlined text-[#F3BA2F] text-sm" data-icon="house">house</span>
+</div>
+<span class="text-white font-body-base">Renta Mensual Oficinas</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-0.5 rounded bg-[#2B3139] text-gray-400 font-label-caps text-[10px]">Inmobiliario</span>
+</td>
+<td class="px-6 py-4 font-data-mono text-sm text-gray-400">12 Oct 2023</td>
+<td class="px-6 py-4">
+<span class="flex items-center text-xs font-label-caps text-white">
+<span class="w-1.5 h-1.5 rounded-full bg-[#F3BA2F] mr-2"></span> Fijo
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right font-data-mono font-bold red-accent-text">-$150.00</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-[#2B3139] transition-colors cursor-pointer group">
+<td class="px-6 py-4">
+<div class="flex items-center">
+<div class="w-8 h-8 rounded bg-[#F3BA2F]/10 flex items-center justify-center mr-3">
+<span class="material-symbols-outlined text-[#F3BA2F] text-sm" data-icon="router">router</span>
+</div>
+<span class="text-white font-body-base">Suscripción Internet Fibra</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-0.5 rounded bg-[#2B3139] text-gray-400 font-label-caps text-[10px]">Servicios</span>
+</td>
+<td class="px-6 py-4 font-data-mono text-sm text-gray-400">10 Oct 2023</td>
+<td class="px-6 py-4">
+<span class="flex items-center text-xs font-label-caps text-white">
+<span class="w-1.5 h-1.5 rounded-full bg-[#F3BA2F] mr-2"></span> Fijo
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right font-data-mono font-bold red-accent-text">-$50.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="px-6 py-4 bg-[#0B0E11] flex justify-between items-center border-t border-[#2B3139]">
+<span class="text-gray-500 font-body-sm">Mostrando 2 de 2 transacciones</span>
+<div class="flex space-x-1">
+<button class="p-1 rounded hover:bg-[#2B3139] text-gray-500"><span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span></button>
+<button class="px-3 py-1 rounded bg-[#2B3139] text-[#F3BA2F] font-data-mono text-xs">1</button>
+<button class="p-1 rounded hover:bg-[#2B3139] text-gray-500"><span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span></button>
+</div>
+</div>
+</section>
+<!-- Bottom Detail Grid (Visual Focus) -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<!-- Visual Chart Simulation -->
+<div class="bg-[#1E2329] border border-[#2B3139] p-6 rounded-xl">
+<div class="flex justify-between items-center mb-6">
+<h4 class="font-title-sm text-white">Distribución de Gastos</h4>
+<span class="material-symbols-outlined text-gray-500" data-icon="pie_chart">pie_chart</span>
+</div>
+<div class="flex items-center justify-center py-4">
+<div class="relative w-40 h-40 rounded-full border-[12px] border-[#2B3139] flex items-center justify-center">
+<div class="absolute inset-0 rounded-full border-[12px] border-[#F3BA2F] border-t-transparent border-r-transparent border-b-transparent"></div>
+<div class="text-center">
+<span class="block font-headline-md text-white font-data-mono">100%</span>
+<span class="block font-label-caps text-gray-500">Fijos</span>
+</div>
+</div>
+<div class="ml-10 space-y-3">
+<div class="flex items-center">
+<span class="w-3 h-3 rounded-full bg-[#F3BA2F] mr-2"></span>
+<span class="font-label-caps text-white">Inmobiliario (75%)</span>
+</div>
+<div class="flex items-center">
+<span class="w-3 h-3 rounded-full bg-[#F3BA2F]/60 mr-2"></span>
+<span class="font-label-caps text-white">Servicios (25%)</span>
+</div>
+<div class="flex items-center">
+<span class="w-3 h-3 rounded-full bg-gray-700 mr-2"></span>
+<span class="font-label-caps text-gray-500">Otros (0%)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Information Card -->
+<div class="bg-[#1E2329] border border-[#2B3139] p-6 rounded-xl relative overflow-hidden flex flex-col justify-center">
+<div class="relative z-10">
+<h4 class="font-title-sm text-[#F3BA2F] mb-2">Optimización de Egresos</h4>
+<p class="text-gray-400 font-body-base leading-relaxed">
+                            Has mantenido tus gastos variables en cero este mes. Un comportamiento excelente para tu salud financiera. Recuerda que el <span class="text-white font-bold">20% de tus ingresos</span> debería ser el tope recomendado para gastos de este tipo.
+                        </p>
+<button class="mt-4 text-[#F3BA2F] font-label-caps hover:underline flex items-center">
+                            Ver consejos de ahorro <span class="material-symbols-outlined ml-1 text-sm" data-icon="open_in_new">open_in_new</span>
+</button>
+</div>
+<!-- Decorative Background Element -->
+<div class="absolute -right-10 -bottom-10 opacity-10">
+<span class="material-symbols-outlined text-[120px] text-[#F3BA2F]" data-icon="monitoring">monitoring</span>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Mobile Bottom Navigation (Suppressed based on logic but included for responsiveness where specified) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-[#1E2329] border-t border-[#2B3139] flex justify-around items-center z-50">
+<a class="flex flex-col items-center text-gray-400" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-[10px] font-label-caps">Panel</span>
+</a>
+<a class="flex flex-col items-center text-gray-400" href="#">
+<span class="material-symbols-outlined" data-icon="trending_up">trending_up</span>
+<span class="text-[10px] font-label-caps">Ingresos</span>
+</a>
+<a class="flex flex-col items-center text-[#F3BA2F]" href="#">
+<span class="material-symbols-outlined" data-icon="trending_down">trending_down</span>
+<span class="text-[10px] font-label-caps">Egresos</span>
+</a>
+<a class="flex flex-col items-center text-gray-400" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance">account_balance</span>
+<span class="text-[10px] font-label-caps">Capital</span>
+</a>
+</nav>
+</body></html>

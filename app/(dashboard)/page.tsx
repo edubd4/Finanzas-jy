@@ -70,6 +70,13 @@ export default function DashboardPage() {
     cargarDatos()
   }, [cargarDatos])
 
+  // Refresco cuando se guarda desde el modal global del sidebar
+  useEffect(() => {
+    const handler = () => cargarDatos()
+    window.addEventListener('movimiento:guardado', handler)
+    return () => window.removeEventListener('movimiento:guardado', handler)
+  }, [cargarDatos])
+
   const irMesAnterior = () => {
     setPeriodo(p => new Date(p.getFullYear(), p.getMonth() - 1, 1))
   }

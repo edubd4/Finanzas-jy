@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary": "#402d00",
+                        "surface-container": "#241f16",
+                        "secondary": "#c2c7cf",
+                        "background": "#17130a",
+                        "on-tertiary-fixed-variant": "#004d64",
+                        "tertiary": "#b4e6ff",
+                        "outline": "#9c8f7a",
+                        "surface-bright": "#3e382e",
+                        "tertiary-container": "#59d0ff",
+                        "on-secondary-fixed-variant": "#42474e",
+                        "surface-container-high": "#2f2920",
+                        "on-primary-fixed-variant": "#5c4300",
+                        "primary-fixed-dim": "#f7be33",
+                        "surface-variant": "#3a342a",
+                        "on-background": "#ece1d2",
+                        "tertiary-fixed-dim": "#68d3ff",
+                        "primary": "#ffda91",
+                        "secondary-fixed": "#dee3eb",
+                        "surface": "#17130a",
+                        "surface-dim": "#17130a",
+                        "surface-tint": "#f7be33",
+                        "primary-container": "#f3ba2f",
+                        "on-primary-container": "#674b00",
+                        "on-primary-fixed": "#261a00",
+                        "on-secondary": "#2c3137",
+                        "on-surface-variant": "#d3c5ad",
+                        "secondary-container": "#42474e",
+                        "on-tertiary": "#003546",
+                        "on-tertiary-container": "#005771",
+                        "error-container": "#93000a",
+                        "surface-container-lowest": "#120e06",
+                        "on-surface": "#ece1d2",
+                        "on-tertiary-fixed": "#001f2a",
+                        "error": "#ffb4ab",
+                        "on-error": "#690005",
+                        "inverse-on-surface": "#353026",
+                        "outline-variant": "#4f4634",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-highest": "#3a342a",
+                        "inverse-surface": "#ece1d2",
+                        "on-secondary-fixed": "#171c22",
+                        "tertiary-fixed": "#bee9ff",
+                        "primary-fixed": "#ffdea0",
+                        "secondary-fixed-dim": "#c2c7cf",
+                        "on-secondary-container": "#b1b5bd",
+                        "surface-container-low": "#201b12",
+                        "inverse-primary": "#795900"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "unit": "4px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "gutter": "16px",
+                        "margin": "24px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "title-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-base": ["Inter"],
+                        "data-mono": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "title-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+                        "body-base": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "data-mono": ["14px", {"lineHeight": "20px", "fontWeight": "500"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body {
+            background-color: #0B0E11;
+            color: #ece1d2;
+        }
+    </style>
+</head>
+<body class="font-body-base overflow-hidden">
+<!-- Sidebar Navigation Shell -->
+<aside class="hidden md:flex h-screen w-64 fixed left-0 top-0 border-r border-[#2B3139] bg-[#0B0E11] flex-col py-4">
+<div class="px-6 mb-8">
+<h1 class="text-lg font-black text-[#F3BA2F] uppercase tracking-wider font-label-caps">FinancePro</h1>
+<p class="text-[10px] text-gray-500 font-label-caps">Trading Edition</p>
+</div>
+<nav class="flex-1 px-3 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:bg-[#1E2329] hover:text-white transition-all duration-150 rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-caps">Dashboard</span>
+</a>
+<!-- Active State: Movimientos -->
+<a class="flex items-center gap-3 px-3 py-2 bg-[#2B3139] text-[#F3BA2F] border-l-4 border-[#F3BA2F] font-semibold transition-all duration-150 rounded-r-lg" href="#">
+<span class="material-symbols-outlined" data-icon="swap_horiz">swap_horiz</span>
+<span class="font-label-caps">Movimientos</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:bg-[#1E2329] hover:text-white transition-all duration-150 rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="trending_up">trending_up</span>
+<span class="font-label-caps">Ingresos</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:bg-[#1E2329] hover:text-white transition-all duration-150 rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="trending_down">trending_down</span>
+<span class="font-label-caps">Egresos</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:bg-[#1E2329] hover:text-white transition-all duration-150 rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance">account_balance</span>
+<span class="font-label-caps">Inversiones</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:bg-[#1E2329] hover:text-white transition-all duration-150 rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-label-caps">Préstamos</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:bg-[#1E2329] hover:text-white transition-all duration-150 rounded-lg group" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-caps">Configuración</span>
+</a>
+</nav>
+<div class="px-3 pt-4 border-t border-[#2B3139] space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:bg-[#1E2329] hover:text-white transition-all duration-150 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-label-caps">Soporte</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-gray-400 hover:bg-[#1E2329] hover:text-white transition-all duration-150 rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-caps">Cerrar Sesión</span>
+</a>
+</div>
+</aside>
+<!-- Top App Bar -->
+<header class="md:ml-64 bg-[#1E2329] text-[#F3BA2F] font-['Inter'] antialiased border-b border-[#2B3139] h-16 flex justify-between items-center px-6 fixed top-0 right-0 left-0 z-30">
+<div class="flex items-center gap-8">
+<h2 class="text-xl font-bold font-title-sm">Movimientos</h2>
+<nav class="hidden lg:flex items-center gap-6">
+<a class="text-[#F3BA2F] border-b-2 border-[#F3BA2F] pb-1 font-label-caps" href="#">Hoy</a>
+<a class="text-gray-400 font-label-caps hover:text-white transition-colors" href="#">Semana</a>
+<a class="text-gray-400 font-label-caps hover:text-white transition-colors" href="#">Mes</a>
+<a class="text-gray-400 font-label-caps hover:text-white transition-colors" href="#">Año</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined cursor-pointer hover:bg-[#2B3139] p-2 rounded-lg" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined cursor-pointer hover:bg-[#2B3139] p-2 rounded-lg" data-icon="account_balance_wallet">account_balance_wallet</span>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-[#2B3139]">
+<img alt="User profile" data-alt="professional male financial trader avatar portrait with neutral office background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJhq1vS-IQ9HocxLgJ03HnAd96Vp-6k5g0CS2-5daSw1jhYV_8dDfrG_z3cV_fSO9nakGIAF44zuRCPSIoNMLpgxE5jtAv9PsMtv_voEC7r56z_4r4v90yYbJ6pbh3hDlCvEPS9yF2CRaIOslS9LHtqbj7OrebFKDxD8SDpvIF9XXH3ikcNrTV7r-GRAQl8z92xvJNjtKx6uDpRC27OAYGPHn1L82YjSfobSxYNIz_QD7v_hiEFyaFxQcrZ_EfRasQrqg2WZ19X3M"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas (Movimientos Background) -->
+<main class="md:ml-64 pt-16 h-screen bg-[#0B0E11] overflow-y-auto">
+<div class="p-gutter max-w-6xl mx-auto space-y-md opacity-40 blur-[2px] pointer-events-none">
+<!-- Filter Bar -->
+<div class="flex justify-between items-center bg-[#1E2329] p-md rounded-lg border border-[#2B3139]">
+<div class="flex gap-4">
+<div class="px-4 py-2 bg-[#2B3139] rounded border border-[#2B3139] text-sm font-label-caps">Todos</div>
+<div class="px-4 py-2 text-gray-500 text-sm font-label-caps">Entradas</div>
+<div class="px-4 py-2 text-gray-500 text-sm font-label-caps">Salidas</div>
+</div>
+<div class="flex gap-2">
+<span class="material-symbols-outlined text-gray-500" data-icon="filter_list">filter_list</span>
+<span class="material-symbols-outlined text-gray-500" data-icon="download">download</span>
+</div>
+</div>
+<!-- Fake Data Table -->
+<div class="bg-[#1E2329] border border-[#2B3139] rounded-lg overflow-hidden">
+<table class="w-full text-left">
+<thead class="bg-[#0B0E11] border-b border-[#2B3139]">
+<tr>
+<th class="px-6 py-4 font-label-caps text-gray-500">FECHA</th>
+<th class="px-6 py-4 font-label-caps text-gray-500">CATEGORÍA</th>
+<th class="px-6 py-4 font-label-caps text-gray-500">DESCRIPCIÓN</th>
+<th class="px-6 py-4 font-label-caps text-gray-500 text-right">MONTO</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#2B3139]">
+<tr class="hover:bg-[#2B3139]">
+<td class="px-6 py-4 font-data-mono">24 Oct, 2023</td>
+<td class="px-6 py-4"><span class="px-2 py-1 bg-[#2B3139] rounded text-xs">Trading</span></td>
+<td class="px-6 py-4 font-body-base">Compra BTC Spot</td>
+<td class="px-6 py-4 text-right font-data-mono text-[#0ECB81]">+2,450.00 USD</td>
+</tr>
+<tr class="hover:bg-[#2B3139]">
+<td class="px-6 py-4 font-data-mono">23 Oct, 2023</td>
+<td class="px-6 py-4"><span class="px-2 py-1 bg-[#2B3139] rounded text-xs">Suscripción</span></td>
+<td class="px-6 py-4 font-body-base">TradingView Premium</td>
+<td class="px-6 py-4 text-right font-data-mono text-[#F6465D]">-59.90 USD</td>
+</tr>
+<tr class="hover:bg-[#2B3139]">
+<td class="px-6 py-4 font-data-mono">22 Oct, 2023</td>
+<td class="px-6 py-4"><span class="px-2 py-1 bg-[#2B3139] rounded text-xs">Inversión</span></td>
+<td class="px-6 py-4 font-body-base">Apple Inc (AAPL) Div</td>
+<td class="px-6 py-4 text-right font-data-mono text-[#0ECB81]">+15.20 USD</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</main>
+<!-- Modal Overlay -->
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+<!-- Transaction Modal Container -->
+<div class="bg-[#1E2329] w-full max-w-lg rounded-xl border border-[#2B3139] shadow-2xl overflow-hidden flex flex-col">
+<!-- Modal Header -->
+<div class="flex justify-between items-center px-6 py-5 border-b border-[#2B3139]">
+<div>
+<h3 class="text-xl font-bold font-title-sm text-[#F3BA2F]">Nuevo movimiento</h3>
+<p class="text-xs text-gray-500 font-label-caps mt-1">REGISTRO DE TRANSACCIÓN FINANCIERA</p>
+</div>
+<button class="text-gray-400 hover:text-white transition-colors cursor-pointer">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+<!-- Modal Content (Form) -->
+<form class="px-6 py-6 space-y-6">
+<!-- Transaction Type Toggle -->
+<div>
+<label class="block text-xs font-label-caps text-gray-400 mb-3">TIPO DE MOVIMIENTO</label>
+<div class="grid grid-cols-4 gap-2 bg-[#0B0E11] p-1 rounded-lg border border-[#2B3139]">
+<button class="py-2 text-[10px] font-bold rounded bg-[#0ECB81] text-black uppercase tracking-wider" type="button">Ingreso</button>
+<button class="py-2 text-[10px] font-bold rounded text-gray-500 hover:bg-[#1E2329] uppercase tracking-wider transition-colors" type="button">Egreso</button>
+<button class="py-2 text-[10px] font-bold rounded text-gray-500 hover:bg-[#1E2329] uppercase tracking-wider transition-colors" type="button">Gasto</button>
+<button class="py-2 text-[10px] font-bold rounded text-gray-500 hover:bg-[#1E2329] uppercase tracking-wider transition-colors" type="button">Inversión</button>
+</div>
+</div>
+<!-- Two Column Grid -->
+<div class="grid grid-cols-2 gap-4">
+<!-- Amount Input -->
+<div class="col-span-2 sm:col-span-1">
+<label class="block text-xs font-label-caps text-gray-400 mb-2">MONTO (USD)</label>
+<div class="relative">
+<input class="w-full bg-[#0B0E11] border border-[#2B3139] rounded py-3 px-4 text-[#F3BA2F] font-data-mono focus:ring-0 focus:border-[#F3BA2F] placeholder-gray-700 outline-none transition-colors" placeholder="0.00" step="0.01" type="number"/>
+<span class="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-gray-600" data-icon="attach_money">attach_money</span>
+</div>
+</div>
+<!-- Date Input -->
+<div class="col-span-2 sm:col-span-1">
+<label class="block text-xs font-label-caps text-gray-400 mb-2">FECHA</label>
+<div class="relative">
+<input class="w-full bg-[#0B0E11] border border-[#2B3139] rounded py-3 px-4 text-white font-data-mono focus:ring-0 focus:border-[#F3BA2F] outline-none transition-colors [color-scheme:dark]" type="date"/>
+</div>
+</div>
+</div>
+<!-- Category Selector -->
+<div>
+<label class="block text-xs font-label-caps text-gray-400 mb-2">CATEGORÍA</label>
+<div class="relative">
+<select class="w-full bg-[#0B0E11] border border-[#2B3139] rounded py-3 px-4 text-white appearance-none focus:ring-0 focus:border-[#F3BA2F] outline-none transition-colors font-body-base">
+<option>Trading Profit</option>
+<option>Dividendos</option>
+<option>Venta de Activos</option>
+<option>Sueldo</option>
+<option>Otros Ingresos</option>
+</select>
+<span class="absolute right-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-gray-600 pointer-events-none" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<!-- Description -->
+<div>
+<label class="block text-xs font-label-caps text-gray-400 mb-2">DESCRIPCIÓN</label>
+<textarea class="w-full bg-[#0B0E11] border border-[#2B3139] rounded py-3 px-4 text-white font-body-base focus:ring-0 focus:border-[#F3BA2F] placeholder-gray-700 outline-none transition-colors resize-none" placeholder="Escribe detalles del movimiento..." rows="3"></textarea>
+</div>
+<!-- Footer Action -->
+<div class="pt-4">
+<button class="w-full bg-[#F3BA2F] hover:bg-[#E2AD28] text-black font-bold py-4 rounded-lg flex items-center justify-center gap-2 transition-all active:scale-[0.98] font-label-caps text-sm tracking-widest uppercase" type="submit">
+<span class="material-symbols-outlined" data-icon="save" data-weight="fill">save</span>
+                        Guardar movimiento
+                    </button>
+<p class="text-[10px] text-center text-gray-600 mt-4 font-label-caps">LA TRANSACCIÓN SERÁ PROCESADA E IMPACTARÁ EN SU BALANCE INMEDIATAMENTE</p>
+</div>
+</form>
+</div>
+</div>
+<!-- Mobile Navigation (Floating if needed or bottom bar) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-[#1E2329] border-t border-[#2B3139] flex justify-around items-center z-40">
+<div class="flex flex-col items-center gap-1 text-gray-500">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-[10px] font-label-caps">Dashboard</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-[#F3BA2F]">
+<span class="material-symbols-outlined" data-icon="swap_horiz">swap_horiz</span>
+<span class="text-[10px] font-label-caps">Movimientos</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-gray-500">
+<span class="material-symbols-outlined" data-icon="account_balance">account_balance</span>
+<span class="text-[10px] font-label-caps">Capital</span>
+</div>
+<div class="flex flex-col items-center gap-1 text-gray-500">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-[10px] font-label-caps">Ajustes</span>
+</div>
+</nav>
+</body></html>

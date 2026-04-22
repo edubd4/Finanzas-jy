@@ -1,6 +1,8 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { Sidebar } from './Sidebar'
+import { FormularioMovimiento } from '@/components/movimientos/FormularioMovimiento'
 
 interface DashboardShellProps {
   children: React.ReactNode
@@ -8,6 +10,19 @@ interface DashboardShellProps {
 }
 
 export function DashboardShell({ children, userName = '' }: DashboardShellProps) {
+  const [formAbierto, setFormAbierto] = useState(false)
+
+  useEffect(() => {
+    const abrir = () => setFormAbierto(true)
+    window.addEventListener('nuevo-movimiento:abrir', abrir)
+    return () => window.removeEventListener('nuevo-movimiento:abrir', abrir)
+  }, [])
+
+  // Cuando se guarda, las páginas que les interese recargan escuchando este evento
+  const handleGuardado = () => {
+    window.dispatchEvent(new CustomEvent('movimiento:guardado'))
+  }
+
   return (
     <div className="flex h-screen bg-jy-bg overflow-hidden">
       {/* Sidebar fijo */}
@@ -21,6 +36,13 @@ export function DashboardShell({ children, userName = '' }: DashboardShellProps)
           {children}
         </div>
       </main>
+
+      {/* Formulario global disparado desde el sidebar */}
+      <FormularioMovimiento
+        abierto={formAbierto}
+        onCerrar={() => setFormAbierto(false)}
+        onGuardado={handleGuardado}
+      />
     </div>
   )
 }

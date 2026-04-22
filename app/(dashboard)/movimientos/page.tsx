@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Plus, Search } from 'lucide-react'
 import { TipoBadge } from '@/components/shared/TipoBadge'
 import { MontoColoreado } from '@/components/shared/MontoColoreado'
@@ -55,11 +56,15 @@ function agruparPorFecha(movimientos: Movimiento[]): GrupoFecha[] {
 }
 
 export default function MovimientosPage() {
+  const searchParams = useSearchParams()
+  const tipoQuery = searchParams.get('tipo')
+  const tiposIniciales = tipoQuery ? tipoQuery.split(',').filter(Boolean) : []
+
   const [periodo, setPeriodo] = useState(new Date())
   const [movimientos, setMovimientos] = useState<Movimiento[]>([])
   const [cargando, setCargando] = useState(true)
   const [busqueda, setBusqueda] = useState('')
-  const [tiposFiltro, setTiposFiltro] = useState<string[]>([])
+  const [tiposFiltro, setTiposFiltro] = useState<string[]>(tiposIniciales)
   const [formularioAbierto, setFormularioAbierto] = useState(false)
   const [movimientoEditar, setMovimientoEditar] = useState<MovimientoEditar | null>(null)
   const [confirmarEliminar, setConfirmarEliminar] = useState<string | null>(null)
@@ -87,6 +92,18 @@ export default function MovimientosPage() {
 
   useEffect(() => {
     cargarMovimientos()
+  }, [cargarMovimientos])
+
+  // Sincronizar filtros con el query param (?tipo=...) cuando cambia desde el sidebar
+  useEffect(() => {
+    setTiposFiltro(tipoQuery ? tipoQuery.split(',').filter(Boolean) : [])
+  }, [tipoQuery])
+
+  // Refresco automático cuando se guarda desde el modal global del sidebar
+  useEffect(() => {
+    const handler = () => cargarMovimientos()
+    window.addEventListener('movimiento:guardado', handler)
+    return () => window.removeEventListener('movimiento:guardado', handler)
   }, [cargarMovimientos])
 
   const toggleTipo = (tipo: string) => {
@@ -154,7 +171,7 @@ export default function MovimientosPage() {
           <h1 className="text-2xl font-display font-semibold text-jy-text">Movimientos</h1>
           <button
             onClick={() => setFormularioAbierto(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-jy-accent text-white rounded-lg text-sm font-medium hover:bg-jy-accent/90 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-jy-accent text-jy-bg rounded text-sm font-semibold hover:bg-jy-accent-hi transition-colors"
           >
             <Plus size={16} />
             Nuevo
