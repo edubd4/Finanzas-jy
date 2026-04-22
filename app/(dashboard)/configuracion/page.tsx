@@ -10,6 +10,7 @@ interface Categoria {
   nombre: string
   tipo: string
   estado: string
+  es_default: boolean
 }
 
 const TIPOS_CATEGORIA = [
@@ -86,7 +87,11 @@ export default function ConfiguracionPage() {
   }
 
   const eliminarCategoria = async (id: string) => {
-    await fetch(`/api/categorias/${id}`, { method: 'DELETE' })
+    const res = await fetch(`/api/categorias/${id}`, { method: 'DELETE' })
+    if (!res.ok) {
+      const json = await res.json()
+      console.error('Error al eliminar:', json)
+    }
     setEliminandoId(null)
     cargarCategorias()
   }
@@ -252,13 +257,15 @@ export default function ConfiguracionPage() {
                     >
                       <Pencil size={13} />
                     </button>
-                    <button
-                      onClick={() => setEliminandoId(cat.id)}
-                      className="p-1.5 text-jy-secondary hover:text-jy-red hover:bg-jy-red/10 rounded transition-colors"
-                      title="Eliminar categoría"
-                    >
-                      <Trash2 size={13} />
-                    </button>
+                    {!cat.es_default && (
+                      <button
+                        onClick={() => setEliminandoId(cat.id)}
+                        className="p-1.5 text-jy-secondary hover:text-jy-red hover:bg-jy-red/10 rounded transition-colors"
+                        title="Eliminar categoría"
+                      >
+                        <Trash2 size={13} />
+                      </button>
+                    )}
                     <button
                       onClick={() => toggleEstado(cat)}
                       className={cn(
