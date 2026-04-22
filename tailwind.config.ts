@@ -9,19 +9,20 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // FinanzasJY — "Professional Dark Trade" palette
-        "jy-bg":        "#120e06",   // Fondo principal (deepest charcoal)
-        "jy-card":      "#201b12",   // Cards y paneles
-        "jy-input":     "#2f2920",   // Inputs, interacción hover
-        "jy-border":    "#4f4634",   // Outline variant (1px borders)
-        "jy-accent":    "#f3ba2f",   // Binance Yellow — CTAs, highlights
-        "jy-accent-hi": "#ffda91",   // Accent claro (hover, ring)
-        "jy-green":     "#0ecb81",   // INGRESO — verde financiero
-        "jy-red":       "#f6465d",   // EGRESO/GASTO — rojo financiero
-        "jy-amber":     "#f59e0b",   // INVERSION
-        "jy-purple":    "#a855f7",   // PRESTAMO
-        "jy-text":      "#ece1d2",   // Texto principal
-        "jy-secondary": "#9c8f7a",   // Texto secundario
+        // FinanzasJY — "Professional Dark Trade" palette (Binance-style)
+        "jy-bg":        "#141621",   // Neutral background — dark navy
+        "jy-card":      "#1E2329",   // Secondary surface — card/panel
+        "jy-input":     "#2B3139",   // Interaction layer — inputs, hover
+        "jy-border":    "#363C45",   // Subtle 1px outlines
+        "jy-accent":    "#F3BA2F",   // Primary — Binance yellow (CTAs)
+        "jy-accent-hi": "#FFDEA0",   // Accent hover / ring
+        "jy-cyan":      "#59D0FF",   // Tertiary — info / highlights
+        "jy-green":     "#0ECB81",   // INGRESO — financial green
+        "jy-red":       "#F6465D",   // EGRESO/GASTO — financial red
+        "jy-amber":     "#F3BA2F",   // INVERSION (mismo que accent)
+        "jy-purple":    "#A855F7",   // PRESTAMO
+        "jy-text":      "#EAECEF",   // Primary text (cool white)
+        "jy-secondary": "#848E9C",   // Secondary text (cool gray)
       },
       fontFamily: {
         display: ["var(--font-inter)", "sans-serif"],
