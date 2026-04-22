@@ -55,7 +55,7 @@
 
 - [x] **DEPL-01**: SUPABASE_SERVICE_ROLE_KEY configured in production env
 - [x] **DEPL-02**: App deployed and accessible on Dokploy
-- [ ] **DEPL-03**: QA pass: all modules verified on desktop and mobile
+- [x] **DEPL-03**: QA pass: all modules verified on desktop and mobile
 
 ## v2 Requirements
 
