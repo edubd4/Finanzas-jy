@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Settings, Plus, Pencil, Check, X } from 'lucide-react'
+import { Settings, Plus, Pencil, Check, X, Trash2 } from 'lucide-react'
 import { TIPO_MOVIMIENTO, TIPO_LABEL, TIPO_COLOR } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
@@ -35,6 +35,7 @@ export default function ConfiguracionPage() {
   // Edición inline
   const [editandoId, setEditandoId] = useState<string | null>(null)
   const [editandoNombre, setEditandoNombre] = useState('')
+  const [eliminandoId, setEliminandoId] = useState<string | null>(null)
 
   const cargarCategorias = async () => {
     setCargando(true)
@@ -84,6 +85,12 @@ export default function ConfiguracionPage() {
     cargarCategorias()
   }
 
+  const eliminarCategoria = async (id: string) => {
+    await fetch(`/api/categorias/${id}`, { method: 'DELETE' })
+    setEliminandoId(null)
+    cargarCategorias()
+  }
+
   const toggleEstado = async (cat: Categoria) => {
     await fetch(`/api/categorias/${cat.id}`, {
       method: 'PATCH',
@@ -98,6 +105,20 @@ export default function ConfiguracionPage() {
     : categorias.filter((c) => c.tipo === filtroTipo)
 
   return (
+    <>
+    {eliminandoId && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className="absolute inset-0 bg-black/60" onClick={() => setEliminandoId(null)} />
+        <div className="relative bg-jy-card border border-white/10 rounded-xl p-6 max-w-sm w-full mx-4">
+          <h3 className="text-jy-text font-semibold mb-2">¿Eliminar categoría?</h3>
+          <p className="text-jy-secondary text-sm mb-4">Si tiene movimientos asociados, se desactivará en lugar de eliminarse.</p>
+          <div className="flex gap-3">
+            <button onClick={() => setEliminandoId(null)} className="flex-1 py-2 rounded-lg bg-jy-input text-jy-text text-sm font-medium hover:bg-jy-input/80 transition-colors">Cancelar</button>
+            <button onClick={() => eliminarCategoria(eliminandoId)} className="flex-1 py-2 rounded-lg bg-jy-red text-white text-sm font-medium hover:bg-jy-red/90 transition-colors">Eliminar</button>
+          </div>
+        </div>
+      </div>
+    )}
     <div className="space-y-6 max-w-2xl">
       <div className="flex items-center gap-3">
         <div className="p-2 rounded-lg bg-jy-secondary/10">
@@ -232,6 +253,13 @@ export default function ConfiguracionPage() {
                       <Pencil size={13} />
                     </button>
                     <button
+                      onClick={() => setEliminandoId(cat.id)}
+                      className="p-1.5 text-jy-secondary hover:text-jy-red hover:bg-jy-red/10 rounded transition-colors"
+                      title="Eliminar categoría"
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                    <button
                       onClick={() => toggleEstado(cat)}
                       className={cn(
                         'px-2 py-0.5 rounded text-xs font-medium transition-colors',
@@ -251,5 +279,6 @@ export default function ConfiguracionPage() {
         )}
       </div>
     </div>
+    </>
   )
 }
