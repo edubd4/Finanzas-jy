@@ -19,12 +19,10 @@ export async function PATCH(
 
   const supabase = await createServiceRoleClient()
 
-  // Verificar ownership
   const { data: existing } = await supabase
     .from('categorias')
-    .select('id, created_by')
+    .select('id')
     .eq('id', params.id)
-    .eq('created_by', user.id)
     .single()
 
   if (!existing) {
@@ -59,9 +57,8 @@ export async function DELETE(
 
   const { data: existing } = await supabase
     .from('categorias')
-    .select('id, created_by')
+    .select('id, created_by, es_default')
     .eq('id', params.id)
-    .eq('created_by', user.id)
     .single()
 
   if (!existing) {

@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Settings, Plus, Pencil, Check, X, Trash2 } from 'lucide-react'
-import { TIPO_MOVIMIENTO, TIPO_LABEL, TIPO_COLOR } from '@/lib/constants'
+import { useState, useEffect, useRef } from 'react'
+import { Settings, Plus, X, Check, Pencil, Trash2 } from 'lucide-react'
+import { TIPO_LABEL } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
 interface Categoria {
@@ -13,32 +13,31 @@ interface Categoria {
   es_default: boolean
 }
 
-const TIPOS_CATEGORIA = [
-  TIPO_MOVIMIENTO.INGRESO,
-  TIPO_MOVIMIENTO.EGRESO,
-  TIPO_MOVIMIENTO.GASTO,
-  TIPO_MOVIMIENTO.INVERSION,
-  'TODOS',
+const GRUPOS = [
+  { tipo: 'INGRESO',   label: 'Ingresos',         color: 'text-jy-green',  ring: 'ring-jy-green/40',  bg: 'bg-jy-green/10'  },
+  { tipo: 'EGRESO',    label: 'Egresos',           color: 'text-jy-red',    ring: 'ring-jy-red/40',    bg: 'bg-jy-red/10'    },
+  { tipo: 'GASTO',     label: 'Gastos',            color: 'text-jy-red',    ring: 'ring-jy-red/40',    bg: 'bg-jy-red/10'    },
+  { tipo: 'INVERSION', label: 'Inversiones',       color: 'text-jy-amber',  ring: 'ring-jy-amber/40',  bg: 'bg-jy-amber/10'  },
+  { tipo: 'TODOS',     label: 'Todos los tipos',   color: 'text-jy-secondary', ring: 'ring-white/20', bg: 'bg-white/5'      },
 ]
 
 export default function ConfiguracionPage() {
   const [categorias, setCategorias] = useState<Categoria[]>([])
   const [cargando, setCargando] = useState(true)
-  const [filtroTipo, setFiltroTipo] = useState<string>('TODOS')
 
-  // Formulario nueva categoría
-  const [mostrarNueva, setMostrarNueva] = useState(false)
-  const [nuevoNombre, setNuevoNombre] = useState('')
-  const [nuevoTipo, setNuevoTipo] = useState<string>(TIPO_MOVIMIENTO.GASTO)
-  const [guardandoNueva, setGuardandoNueva] = useState(false)
-  const [errorNueva, setErrorNueva] = useState<string | null>(null)
-
-  // Edición inline
   const [editandoId, setEditandoId] = useState<string | null>(null)
   const [editandoNombre, setEditandoNombre] = useState('')
+
+  const [agregandoTipo, setAgregandoTipo] = useState<string | null>(null)
+  const [nuevoNombre, setNuevoNombre] = useState('')
+  const [guardando, setGuardando] = useState(false)
+  const [errorMsg, setErrorMsg] = useState<string | null>(null)
+
   const [eliminandoId, setEliminandoId] = useState<string | null>(null)
 
-  const cargarCategorias = async () => {
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  const cargar = async () => {
     setCargando(true)
     try {
       const res = await fetch('/api/categorias')
@@ -49,243 +48,234 @@ export default function ConfiguracionPage() {
     }
   }
 
-  useEffect(() => { cargarCategorias() }, [])
+  useEffect(() => { cargar() }, [])
+
+  useEffect(() => {
+    if (agregandoTipo || editandoId) inputRef.current?.focus()
+  }, [agregandoTipo, editandoId])
 
   const crearCategoria = async () => {
-    if (!nuevoNombre.trim()) return
-    setGuardandoNueva(true)
-    setErrorNueva(null)
+    if (!nuevoNombre.trim() || !agregandoTipo) return
+    setGuardando(true)
+    setErrorMsg(null)
     try {
       const res = await fetch('/api/categorias', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre: nuevoNombre.trim(), tipo: nuevoTipo }),
+        body: JSON.stringify({ nombre: nuevoNombre.trim(), tipo: agregandoTipo }),
       })
       if (!res.ok) {
         const json = await res.json()
-        setErrorNueva(json?.error?.formErrors?.[0] ?? json?.error ?? 'Error al crear categoría')
+        setErrorMsg(json?.error?.formErrors?.[0] ?? json?.error ?? 'Error al crear')
         return
       }
+      setAgregandoTipo(null)
       setNuevoNombre('')
-      setMostrarNueva(false)
-      setFiltroTipo(nuevoTipo)
-      cargarCategorias()
+      cargar()
     } finally {
-      setGuardandoNueva(false)
+      setGuardando(false)
     }
   }
 
-  const guardarEdicion = async (id: string) => {
-    if (!editandoNombre.trim()) return
-    await fetch(`/api/categorias/${id}`, {
+  const guardarEdicion = async () => {
+    if (!editandoNombre.trim() || !editandoId) return
+    await fetch(`/api/categorias/${editandoId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ nombre: editandoNombre.trim() }),
     })
     setEditandoId(null)
-    cargarCategorias()
+    cargar()
   }
 
-  const eliminarCategoria = async (id: string) => {
+  const eliminar = async (id: string) => {
     const res = await fetch(`/api/categorias/${id}`, { method: 'DELETE' })
     if (!res.ok) {
-      const json = await res.json()
-      console.error('Error al eliminar:', json)
+      const json = await res.json().catch(() => ({}))
+      setErrorMsg(json?.error ?? 'Error al eliminar')
     }
     setEliminandoId(null)
-    cargarCategorias()
+    cargar()
   }
 
-  const toggleEstado = async (cat: Categoria) => {
-    await fetch(`/api/categorias/${cat.id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ estado: cat.estado === 'ACTIVA' ? 'INACTIVA' : 'ACTIVA' }),
-    })
-    cargarCategorias()
+  const cancelarAgregar = () => {
+    setAgregandoTipo(null)
+    setNuevoNombre('')
+    setErrorMsg(null)
   }
 
-  const categoriasFiltradas = filtroTipo === 'TODOS'
-    ? categorias
-    : categorias.filter((c) => c.tipo === filtroTipo)
+  const cancelarEdicion = () => {
+    setEditandoId(null)
+    setEditandoNombre('')
+  }
 
   return (
     <>
-    {eliminandoId && (
-      <div className="fixed inset-0 z-50 flex items-center justify-center">
-        <div className="absolute inset-0 bg-black/60" onClick={() => setEliminandoId(null)} />
-        <div className="relative bg-jy-card border border-white/10 rounded-xl p-6 max-w-sm w-full mx-4">
-          <h3 className="text-jy-text font-semibold mb-2">¿Eliminar categoría?</h3>
-          <p className="text-jy-secondary text-sm mb-4">Si tiene movimientos asociados, se desactivará en lugar de eliminarse.</p>
-          <div className="flex gap-3">
-            <button onClick={() => setEliminandoId(null)} className="flex-1 py-2 rounded-lg bg-jy-input text-jy-text text-sm font-medium hover:bg-jy-input/80 transition-colors">Cancelar</button>
-            <button onClick={() => eliminarCategoria(eliminandoId)} className="flex-1 py-2 rounded-lg bg-jy-red text-white text-sm font-medium hover:bg-jy-red/90 transition-colors">Eliminar</button>
-          </div>
-        </div>
-      </div>
-    )}
-    <div className="space-y-6 max-w-2xl">
-      <div className="flex items-center gap-3">
-        <div className="p-2 rounded-lg bg-jy-secondary/10">
-          <Settings size={20} className="text-jy-secondary" />
-        </div>
-        <h1 className="text-2xl font-display font-semibold text-jy-text">Configuración</h1>
-      </div>
-
-      {/* Sección categorías */}
-      <div className="bg-jy-card rounded-xl border border-white/5 overflow-hidden">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-white/5">
-          <h2 className="text-jy-text font-semibold">Categorías</h2>
-          <button
-            onClick={() => { setMostrarNueva(!mostrarNueva); setErrorNueva(null) }}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-jy-accent text-white rounded-lg text-xs font-medium hover:bg-jy-accent/90 transition-colors"
-          >
-            <Plus size={14} />
-            Nueva
-          </button>
-        </div>
-
-        {/* Formulario nueva categoría */}
-        {mostrarNueva && (
-          <div className="px-5 py-4 border-b border-white/5 bg-jy-input/30">
-            {errorNueva && (
-              <p className="text-jy-red text-xs mb-3">{errorNueva}</p>
-            )}
-            <div className="flex gap-3 flex-wrap">
-              <input
-                type="text"
-                value={nuevoNombre}
-                onChange={(e) => setNuevoNombre(e.target.value)}
-                placeholder="Nombre de la categoría"
-                className="flex-1 min-w-0 bg-jy-input border border-white/10 rounded-lg px-3 py-2 text-jy-text text-sm focus:outline-none focus:ring-1 focus:ring-jy-accent"
-                onKeyDown={(e) => e.key === 'Enter' && crearCategoria()}
-                autoFocus
-              />
-              <select
-                value={nuevoTipo}
-                onChange={(e) => setNuevoTipo(e.target.value)}
-                className="bg-jy-input border border-white/10 rounded-lg px-3 py-2 text-jy-text text-sm focus:outline-none focus:ring-1 focus:ring-jy-accent"
-              >
-                {TIPOS_CATEGORIA.map((t) => (
-                  <option key={t} value={t}>
-                    {t === 'TODOS' ? 'Todos los tipos' : TIPO_LABEL[t as keyof typeof TIPO_LABEL] ?? t}
-                  </option>
-                ))}
-              </select>
+      {/* Modal confirmar eliminación */}
+      {eliminandoId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/60" onClick={() => setEliminandoId(null)} />
+          <div className="relative bg-jy-card border border-white/10 rounded-xl p-6 max-w-sm w-full mx-4">
+            <h3 className="text-jy-text font-semibold mb-2">¿Eliminar categoría?</h3>
+            <p className="text-jy-secondary text-sm mb-4">
+              Si tiene movimientos asociados se desactivará. Sin movimientos, se elimina permanentemente.
+            </p>
+            <div className="flex gap-3">
               <button
-                onClick={crearCategoria}
-                disabled={guardandoNueva || !nuevoNombre.trim()}
-                className="px-4 py-2 bg-jy-accent text-white rounded-lg text-sm font-medium hover:bg-jy-accent/90 disabled:opacity-50 transition-colors"
-              >
-                {guardandoNueva ? 'Guardando...' : 'Guardar'}
-              </button>
-              <button
-                onClick={() => { setMostrarNueva(false); setNuevoNombre(''); setErrorNueva(null) }}
-                className="px-3 py-2 bg-jy-input text-jy-secondary rounded-lg text-sm hover:text-jy-text transition-colors"
+                onClick={() => setEliminandoId(null)}
+                className="flex-1 py-2 rounded-lg bg-jy-input text-jy-text text-sm font-medium hover:bg-jy-input/80 transition-colors"
               >
                 Cancelar
               </button>
+              <button
+                onClick={() => eliminar(eliminandoId)}
+                className="flex-1 py-2 rounded-lg bg-jy-red text-white text-sm font-medium hover:bg-jy-red/90 transition-colors"
+              >
+                Eliminar
+              </button>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Filtro por tipo */}
-        <div className="flex gap-1.5 px-5 py-3 border-b border-white/5 overflow-x-auto">
-          {['TODOS', ...Object.values(TIPO_MOVIMIENTO).filter(t => t !== 'PRESTAMO')].map((t) => (
-            <button
-              key={t}
-              onClick={() => setFiltroTipo(t)}
-              className={cn(
-                'px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-colors',
-                filtroTipo === t
-                  ? 'bg-jy-accent text-white'
-                  : 'bg-jy-input text-jy-secondary hover:text-jy-text'
-              )}
-            >
-              {t === 'TODOS' ? 'Todos' : TIPO_LABEL[t as keyof typeof TIPO_LABEL] ?? t}
-            </button>
-          ))}
+      <div className="space-y-6 max-w-3xl">
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-jy-secondary/10">
+            <Settings size={20} className="text-jy-secondary" />
+          </div>
+          <h1 className="text-2xl font-display font-semibold text-jy-text">Configuración</h1>
         </div>
 
-        {/* Lista de categorías */}
-        {cargando ? (
-          <div className="p-5 space-y-2">
-            {[...Array(5)].map((_, i) => (
-              <div key={i} className="h-10 bg-jy-input/40 rounded animate-pulse" />
-            ))}
+        {/* Categorías */}
+        <div className="bg-jy-card rounded-xl border border-white/5 overflow-hidden">
+          <div className="px-5 py-4 border-b border-white/5">
+            <h2 className="text-jy-text font-semibold">Categorías</h2>
+            <p className="text-jy-secondary text-xs mt-0.5">Hacé clic en una categoría para editarla. La × la elimina.</p>
           </div>
-        ) : !categoriasFiltradas.length ? (
-          <p className="text-center text-jy-secondary text-sm py-8">No hay categorías.</p>
-        ) : (
-          <div className="divide-y divide-white/5">
-            {categoriasFiltradas.map((cat) => (
-              <div key={cat.id} className="flex items-center gap-3 px-5 py-3">
-                {editandoId === cat.id ? (
-                  <>
-                    <input
-                      type="text"
-                      value={editandoNombre}
-                      onChange={(e) => setEditandoNombre(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') guardarEdicion(cat.id)
-                        if (e.key === 'Escape') setEditandoId(null)
-                      }}
-                      className="flex-1 bg-jy-input border border-jy-accent rounded px-2 py-1 text-jy-text text-sm focus:outline-none"
-                      autoFocus
-                    />
-                    <button onClick={() => guardarEdicion(cat.id)} className="p-1 text-jy-green hover:bg-jy-green/10 rounded">
-                      <Check size={15} />
-                    </button>
-                    <button onClick={() => setEditandoId(null)} className="p-1 text-jy-secondary hover:bg-white/10 rounded">
-                      <X size={15} />
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <div className="flex-1 min-w-0">
-                      <span className={cn('text-sm', cat.estado === 'INACTIVA' ? 'text-jy-secondary line-through' : 'text-jy-text')}>
-                        {cat.nombre}
+
+          {cargando ? (
+            <div className="p-5 space-y-4">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="h-8 bg-jy-input/40 rounded animate-pulse" />
+              ))}
+            </div>
+          ) : (
+            <div className="divide-y divide-white/5">
+              {GRUPOS.map((grupo) => {
+                const items = categorias.filter((c) => c.tipo === grupo.tipo)
+                const esteAgregando = agregandoTipo === grupo.tipo
+
+                return (
+                  <div key={grupo.tipo} className="px-5 py-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className={cn('text-xs font-semibold uppercase tracking-wider', grupo.color)}>
+                        {grupo.label}
                       </span>
-                    </div>
-                    <span className={cn('text-xs font-medium', TIPO_COLOR[cat.tipo] ?? 'text-jy-secondary')}>
-                      {cat.tipo === 'TODOS' ? 'Todos' : TIPO_LABEL[cat.tipo as keyof typeof TIPO_LABEL] ?? cat.tipo}
-                    </span>
-                    <button
-                      onClick={() => { setEditandoId(cat.id); setEditandoNombre(cat.nombre) }}
-                      className="p-1.5 text-jy-secondary hover:text-jy-text hover:bg-white/10 rounded transition-colors"
-                      title="Editar nombre"
-                    >
-                      <Pencil size={13} />
-                    </button>
-                    {!cat.es_default && (
                       <button
-                        onClick={() => setEliminandoId(cat.id)}
-                        className="p-1.5 text-jy-secondary hover:text-jy-red hover:bg-jy-red/10 rounded transition-colors"
-                        title="Eliminar categoría"
+                        onClick={() => { cancelarAgregar(); setAgregandoTipo(grupo.tipo) }}
+                        className="flex items-center gap-1 text-xs text-jy-secondary hover:text-jy-text transition-colors"
                       >
-                        <Trash2 size={13} />
+                        <Plus size={12} />
+                        Agregar
                       </button>
-                    )}
-                    <button
-                      onClick={() => toggleEstado(cat)}
-                      className={cn(
-                        'px-2 py-0.5 rounded text-xs font-medium transition-colors',
-                        cat.estado === 'ACTIVA'
-                          ? 'bg-jy-green/10 text-jy-green hover:bg-jy-red/10 hover:text-jy-red'
-                          : 'bg-jy-secondary/10 text-jy-secondary hover:bg-jy-green/10 hover:text-jy-green'
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                      {items.map((cat) => (
+                        <div
+                          key={cat.id}
+                          className={cn(
+                            'flex items-center gap-1.5 rounded-lg border text-sm transition-colors',
+                            cat.estado === 'INACTIVA' ? 'opacity-40' : '',
+                            editandoId === cat.id
+                              ? `ring-1 ${grupo.ring} bg-jy-input border-transparent px-1 py-0.5`
+                              : `${grupo.bg} border-white/10 px-3 py-1.5`
+                          )}
+                        >
+                          {editandoId === cat.id ? (
+                            <>
+                              <input
+                                ref={inputRef}
+                                value={editandoNombre}
+                                onChange={(e) => setEditandoNombre(e.target.value)}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') guardarEdicion()
+                                  if (e.key === 'Escape') cancelarEdicion()
+                                }}
+                                className="bg-transparent text-jy-text text-sm outline-none w-32"
+                              />
+                              <button onClick={guardarEdicion} className="text-jy-green hover:text-jy-green/80">
+                                <Check size={13} />
+                              </button>
+                              <button onClick={cancelarEdicion} className="text-jy-secondary hover:text-jy-text">
+                                <X size={13} />
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <button
+                                onClick={() => { cancelarEdicion(); setEditandoId(cat.id); setEditandoNombre(cat.nombre) }}
+                                className={cn('text-sm flex items-center gap-1.5', grupo.color)}
+                              >
+                                <Pencil size={10} className="opacity-50" />
+                                {cat.nombre}
+                              </button>
+                              <button
+                                onClick={() => setEliminandoId(cat.id)}
+                                className="text-jy-secondary hover:text-jy-red transition-colors ml-1"
+                              >
+                                <X size={12} />
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      ))}
+
+                      {/* Chip de agregar inline */}
+                      {esteAgregando && (
+                        <div className={cn(
+                          'flex items-center gap-1.5 rounded-lg border ring-1 bg-jy-input border-transparent px-2 py-1',
+                          grupo.ring
+                        )}>
+                          <input
+                            ref={agregandoTipo === grupo.tipo ? inputRef : undefined}
+                            value={nuevoNombre}
+                            onChange={(e) => setNuevoNombre(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') crearCategoria()
+                              if (e.key === 'Escape') cancelarAgregar()
+                            }}
+                            placeholder="Nombre..."
+                            className="bg-transparent text-jy-text text-sm outline-none w-28 placeholder:text-jy-secondary"
+                          />
+                          <button
+                            onClick={crearCategoria}
+                            disabled={guardando || !nuevoNombre.trim()}
+                            className="text-jy-green hover:text-jy-green/80 disabled:opacity-40"
+                          >
+                            <Check size={13} />
+                          </button>
+                          <button onClick={cancelarAgregar} className="text-jy-secondary hover:text-jy-text">
+                            <X size={13} />
+                          </button>
+                        </div>
                       )}
-                      title={cat.estado === 'ACTIVA' ? 'Desactivar' : 'Activar'}
-                    >
-                      {cat.estado === 'ACTIVA' ? 'Activa' : 'Inactiva'}
-                    </button>
-                  </>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
+
+                      {items.length === 0 && !esteAgregando && (
+                        <span className="text-jy-secondary text-xs italic">Sin categorías</span>
+                      )}
+                    </div>
+
+                    {errorMsg && esteAgregando && (
+                      <p className="text-jy-red text-xs mt-2">{errorMsg}</p>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
     </>
   )
 }
