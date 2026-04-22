@@ -1,8 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { Settings, Plus, X, Check, Pencil, Trash2 } from 'lucide-react'
-import { TIPO_LABEL } from '@/lib/constants'
+import { Settings, Plus, X, Check, Pencil } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface Categoria {
