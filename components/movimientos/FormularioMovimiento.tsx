@@ -85,7 +85,6 @@ export function FormularioMovimiento({
   }, [tipo, abierto, movimientoEditar])
 
   const accentClass = TIPO_FORM_ACCENT[tipo] ?? ''
-  const bgClass = TIPO_BG[tipo] ?? ''
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
