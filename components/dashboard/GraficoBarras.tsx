@@ -19,6 +19,7 @@ interface DatoMes {
 
 interface GraficoBarrasProps {
   datos: DatoMes[]
+  titulo?: string
 }
 
 interface TooltipEntry {
@@ -54,12 +55,10 @@ const CustomTooltip = ({ active, payload, label }: TooltipProps) => {
   return null
 }
 
-export function GraficoBarras({ datos }: GraficoBarrasProps) {
+export function GraficoBarras({ datos, titulo = 'Ingresos vs Egresos — últimos 6 meses' }: GraficoBarrasProps) {
   return (
     <div className="bg-jy-card rounded-xl p-5 border border-white/5">
-      <h2 className="text-jy-text font-semibold mb-4">
-        Ingresos vs Egresos — últimos 6 meses
-      </h2>
+      <h2 className="text-jy-text font-semibold mb-4">{titulo}</h2>
       <ResponsiveContainer width="100%" height={220}>
         <BarChart data={datos} barCategoryGap="30%">
           <CartesianGrid strokeDasharray="3 3" stroke="#ffffff0f" />

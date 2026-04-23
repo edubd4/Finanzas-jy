@@ -14,7 +14,6 @@ import {
   Settings,
   LogOut,
   Plus,
-  LifeBuoy,
 } from 'lucide-react'
 
 const NAV_ITEMS = [
@@ -95,15 +94,8 @@ export function Sidebar({ userName, onNavigate }: SidebarProps) {
         Nuevo Movimiento
       </button>
 
-      {/* Footer: Soporte + Logout */}
+      {/* Footer: Logout */}
       <div className="mt-3 pt-3 border-t border-jy-border space-y-0.5">
-        <a
-          href="mailto:eduardo.barreiro93@gmail.com?subject=Soporte%20FinanzasJY"
-          className="flex items-center gap-3 px-3 py-2 rounded text-sm text-jy-secondary hover:text-jy-text hover:bg-jy-input transition-colors"
-        >
-          <LifeBuoy className="h-4 w-4 flex-shrink-0" />
-          Soporte
-        </a>
         <button
           onClick={handleLogout}
           className="w-full flex items-center gap-3 px-3 py-2 rounded text-sm text-jy-secondary hover:text-jy-red hover:bg-jy-input transition-colors"

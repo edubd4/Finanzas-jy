@@ -1,21 +1,35 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient, createServiceRoleClient } from '@/lib/supabase/server'
 
-// GET /api/dashboard?anio=2026&mes=3
+// GET /api/dashboard?desde=YYYY-MM-DD&hasta=YYYY-MM-DD[&grafico_anio=YYYY]
+// Legacy: ?anio=YYYY&mes=MM (still supported)
 export async function GET(req: NextRequest) {
   const authClient = await createServerClient()
   const { data: { user } } = await authClient.auth.getUser()
   if (!user) return NextResponse.json({ error: 'No autenticado' }, { status: 401 })
 
   const { searchParams } = new URL(req.url)
-  const anio = parseInt(searchParams.get('anio') ?? String(new Date().getFullYear()))
-  const mes = parseInt(searchParams.get('mes') ?? String(new Date().getMonth() + 1))
-
   const supabase = await createServiceRoleClient()
 
-  // Rango del período seleccionado
-  const desde = `${anio}-${String(mes).padStart(2, '0')}-01`
-  const hasta = new Date(anio, mes, 0).toISOString().split('T')[0] // último día del mes
+  // Resolver rango del período
+  let desde: string
+  let hasta: string
+
+  if (searchParams.get('desde') && searchParams.get('hasta')) {
+    desde = searchParams.get('desde')!
+    hasta = searchParams.get('hasta')!
+  } else {
+    // Backward compat: anio + mes
+    const anio = parseInt(searchParams.get('anio') ?? String(new Date().getFullYear()))
+    const mes  = parseInt(searchParams.get('mes')  ?? String(new Date().getMonth() + 1))
+    desde = `${anio}-${String(mes).padStart(2, '0')}-01`
+    hasta = new Date(anio, mes, 0).toISOString().split('T')[0]
+  }
+
+  // Parámetro opcional para chart anual
+  const graficoAnio = searchParams.get('grafico_anio')
+    ? parseInt(searchParams.get('grafico_anio')!)
+    : null
 
   // 1. Métricas del período
   const { data: movimientosPeriodo } = await supabase
@@ -27,13 +41,7 @@ export async function GET(req: NextRequest) {
     .gte('fecha', desde)
     .lte('fecha', hasta)
 
-  const metricas = {
-    ingresos: 0,
-    egresos: 0,
-    inversiones: 0,
-    balance: 0,
-  }
-
+  const metricas = { ingresos: 0, egresos: 0, inversiones: 0, balance: 0 }
   for (const m of movimientosPeriodo ?? []) {
     if (m.tipo === 'INGRESO') metricas.ingresos += m.monto
     if (m.tipo === 'EGRESO' || m.tipo === 'GASTO') metricas.egresos += m.monto
@@ -41,57 +49,82 @@ export async function GET(req: NextRequest) {
   }
   metricas.balance = metricas.ingresos - metricas.egresos
 
-  // 2. Últimos 5 movimientos
+  // 2. Últimos 5 movimientos (siempre los más recientes, sin filtro de período)
   const { data: ultimos } = await supabase
     .from('movimientos')
-    .select(`
-      id, jy_id, tipo, monto, fecha, descripcion,
-      categoria:categorias(id, nombre)
-    `)
+    .select(`id, jy_id, tipo, monto, fecha, descripcion, categoria:categorias(id, nombre)`)
     .eq('created_by', user.id)
     .is('deleted_at', null)
     .neq('estado', 'ELIMINADO')
     .order('fecha', { ascending: false })
     .limit(5)
 
-  // 3. Gráfico: ingresos vs egresos últimos 6 meses
+  // 3. Gráfico: anual (12 meses) o rolling 6 meses
   const graficoData: { mes: string; ingresos: number; egresos: number }[] = []
 
-  for (let i = 5; i >= 0; i--) {
-    const d = new Date(anio, mes - 1 - i, 1)
-    const mAnio = d.getFullYear()
-    const mMes = d.getMonth() + 1
-    const mDesde = `${mAnio}-${String(mMes).padStart(2, '0')}-01`
-    const mHasta = new Date(mAnio, mMes, 0).toISOString().split('T')[0]
+  if (graficoAnio) {
+    // Vista anual: los 12 meses del año
+    for (let m = 1; m <= 12; m++) {
+      const mDesde = `${graficoAnio}-${String(m).padStart(2, '0')}-01`
+      const mHasta = new Date(graficoAnio, m, 0).toISOString().split('T')[0]
+      const { data: movMes } = await supabase
+        .from('movimientos')
+        .select('tipo, monto')
+        .eq('created_by', user.id)
+        .is('deleted_at', null)
+        .neq('estado', 'ELIMINADO')
+        .gte('fecha', mDesde)
+        .lte('fecha', mHasta)
+        .in('tipo', ['INGRESO', 'EGRESO', 'GASTO'])
 
-    const { data: movMes } = await supabase
-      .from('movimientos')
-      .select('tipo, monto')
-      .eq('created_by', user.id)
-      .is('deleted_at', null)
-      .neq('estado', 'ELIMINADO')
-      .gte('fecha', mDesde)
-      .lte('fecha', mHasta)
-      .in('tipo', ['INGRESO', 'EGRESO', 'GASTO'])
-
-    let ingresos = 0
-    let egresos = 0
-    for (const m of movMes ?? []) {
-      if (m.tipo === 'INGRESO') ingresos += m.monto
-      else egresos += m.monto
+      let ing = 0, egr = 0
+      for (const mv of movMes ?? []) {
+        if (mv.tipo === 'INGRESO') ing += mv.monto
+        else egr += mv.monto
+      }
+      const label = new Date(graficoAnio, m - 1, 1)
+        .toLocaleDateString('es-AR', { month: 'short' })
+      graficoData.push({ mes: label, ingresos: ing, egresos: egr })
     }
+  } else {
+    // Rolling 6 meses desde el mes de referencia (mes del "hasta")
+    const refDate = new Date(hasta)
+    const refAnio = refDate.getFullYear()
+    const refMes  = refDate.getMonth() + 1
 
-    graficoData.push({
-      mes: d.toLocaleDateString('es-AR', { month: 'short' }),
-      ingresos,
-      egresos,
-    })
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(refAnio, refMes - 1 - i, 1)
+      const mAnio = d.getFullYear()
+      const mMes  = d.getMonth() + 1
+      const mDesde = `${mAnio}-${String(mMes).padStart(2, '0')}-01`
+      const mHasta = new Date(mAnio, mMes, 0).toISOString().split('T')[0]
+
+      const { data: movMes } = await supabase
+        .from('movimientos')
+        .select('tipo, monto')
+        .eq('created_by', user.id)
+        .is('deleted_at', null)
+        .neq('estado', 'ELIMINADO')
+        .gte('fecha', mDesde)
+        .lte('fecha', mHasta)
+        .in('tipo', ['INGRESO', 'EGRESO', 'GASTO'])
+
+      let ing = 0, egr = 0
+      for (const mv of movMes ?? []) {
+        if (mv.tipo === 'INGRESO') ing += mv.monto
+        else egr += mv.monto
+      }
+      graficoData.push({
+        mes: d.toLocaleDateString('es-AR', { month: 'short' }),
+        ingresos: ing,
+        egresos: egr,
+      })
+    }
   }
 
-  // 4. Próximos pagos de préstamos (30 días)
-  const hoy = new Date()
-  const en30 = new Date()
-  en30.setDate(en30.getDate() + 30)
+  // 4. Próximos pagos de préstamos (30 días) — siempre desde hoy
+  const hoy    = new Date()
+  const en30   = new Date(); en30.setDate(hoy.getDate() + 30)
   const hoyStr = hoy.toISOString().slice(0, 10)
   const en30Str = en30.toISOString().slice(0, 10)
 

@@ -29,63 +29,104 @@ interface CuotaProxima {
 }
 
 interface DashboardData {
-  metricas: {
-    ingresos: number
-    egresos: number
-    inversiones: number
-    balance: number
-  }
+  metricas: { ingresos: number; egresos: number; inversiones: number; balance: number }
   ultimos: Movimiento[]
   grafico: { mes: string; ingresos: number; egresos: number }[]
   proximosPagos?: CuotaProxima[]
 }
 
-// Tabs de período decorativas — por ahora solo "Mes" funciona (respeta la lógica mensual existente)
-const PERIODOS = ['Hoy', 'Semana', 'Mes', 'Año'] as const
-type Periodo = typeof PERIODOS[number]
+type TabPeriodo = 'Hoy' | 'Semana' | 'Mes' | 'Año'
 
-function calcDelta(actual: number, anterior: number): { texto: string; positivo: boolean } | null {
+// ── Helpers de fecha ──────────────────────────────────────────────────────────
+function toDateStr(d: Date) {
+  return d.toISOString().split('T')[0]
+}
+
+function getRango(tab: TabPeriodo, mesFecha: Date, anioNav: number) {
+  const hoy = new Date()
+  switch (tab) {
+    case 'Hoy': {
+      const s = toDateStr(hoy)
+      return { desde: s, hasta: s, graficoAnio: null }
+    }
+    case 'Semana': {
+      const lunes = new Date(hoy)
+      lunes.setDate(hoy.getDate() - ((hoy.getDay() + 6) % 7))
+      return { desde: toDateStr(lunes), hasta: toDateStr(hoy), graficoAnio: null }
+    }
+    case 'Mes': {
+      const anio = mesFecha.getFullYear()
+      const mes  = mesFecha.getMonth() + 1
+      return {
+        desde: `${anio}-${String(mes).padStart(2, '0')}-01`,
+        hasta: new Date(anio, mes, 0).toISOString().split('T')[0],
+        graficoAnio: null,
+      }
+    }
+    case 'Año':
+      return {
+        desde: `${anioNav}-01-01`,
+        hasta: `${anioNav}-12-31`,
+        graficoAnio: anioNav,
+      }
+  }
+}
+
+function calcDelta(actual: number, anterior: number) {
   if (anterior === 0 && actual === 0) return null
   if (anterior === 0) return { texto: 'Nuevo', positivo: actual >= 0 }
   const diff = ((actual - anterior) / Math.abs(anterior)) * 100
-  const signo = diff > 0 ? '+' : ''
-  return { texto: `${signo}${diff.toFixed(1)}% vs mes anterior`, positivo: diff >= 0 }
+  return { texto: `${diff > 0 ? '+' : ''}${diff.toFixed(1)}% vs periodo anterior`, positivo: diff >= 0 }
 }
 
+function labelNavegacion(tab: TabPeriodo, mesFecha: Date, anioNav: number) {
+  if (tab === 'Mes') return formatMes(mesFecha)
+  if (tab === 'Año') return String(anioNav)
+  return ''
+}
+
+// ── Componente ────────────────────────────────────────────────────────────────
 export default function DashboardPage() {
-  const [periodo, setPeriodo] = useState(new Date())
-  const [periodoTab, setPeriodoTab] = useState<Periodo>('Mes')
-  const [data, setData] = useState<DashboardData | null>(null)
-  const [dataPrev, setDataPrev] = useState<DashboardData | null>(null)
-  const [cargando, setCargando] = useState(true)
+  const [tabActivo, setTabActivo]   = useState<TabPeriodo>('Mes')
+  const [mesFecha, setMesFecha]     = useState(new Date())
+  const [anioNav, setAnioNav]       = useState(new Date().getFullYear())
+  const [data, setData]             = useState<DashboardData | null>(null)
+  const [dataPrev, setDataPrev]     = useState<DashboardData | null>(null)
+  const [cargando, setCargando]     = useState(true)
 
   const cargarDatos = useCallback(async () => {
     setCargando(true)
     try {
-      const anio = periodo.getFullYear()
-      const mes = periodo.getMonth() + 1
-      const anioPrev = mes === 1 ? anio - 1 : anio
-      const mesPrev = mes === 1 ? 12 : mes - 1
+      const { desde, hasta, graficoAnio } = getRango(tabActivo, mesFecha, anioNav)
+      const params = new URLSearchParams({ desde, hasta })
+      if (graficoAnio) params.set('grafico_anio', String(graficoAnio))
+
+      // Período anterior para deltas (solo MES y AÑO)
+      let urlPrev: string | null = null
+      if (tabActivo === 'Mes') {
+        const prev = new Date(mesFecha.getFullYear(), mesFecha.getMonth() - 1, 1)
+        const { desde: dp, hasta: hp } = getRango('Mes', prev, anioNav)
+        urlPrev = `/api/dashboard?desde=${dp}&hasta=${hp}`
+      } else if (tabActivo === 'Año') {
+        urlPrev = `/api/dashboard?desde=${anioNav - 1}-01-01&hasta=${anioNav - 1}-12-31`
+      }
 
       const [resActual, resPrev] = await Promise.all([
-        fetch(`/api/dashboard?anio=${anio}&mes=${mes}`),
-        fetch(`/api/dashboard?anio=${anioPrev}&mes=${mesPrev}`),
+        fetch(`/api/dashboard?${params}`),
+        urlPrev ? fetch(urlPrev) : Promise.resolve(null),
       ])
-      if (!resActual.ok) throw new Error('Error al cargar datos')
-      const jsonActual = await resActual.json()
-      const jsonPrev = resPrev.ok ? await resPrev.json() : null
-      setData(jsonActual)
-      setDataPrev(jsonPrev)
+
+      if (!resActual.ok) throw new Error('Error')
+      setData(await resActual.json())
+      setDataPrev(resPrev?.ok ? await resPrev.json() : null)
     } catch (err) {
       console.error(err)
     } finally {
       setCargando(false)
     }
-  }, [periodo])
+  }, [tabActivo, mesFecha, anioNav])
 
-  useEffect(() => {
-    cargarDatos()
-  }, [cargarDatos])
+  useEffect(() => { cargarDatos() }, [cargarDatos])
 
   useEffect(() => {
     const handler = () => cargarDatos()
@@ -93,68 +134,75 @@ export default function DashboardPage() {
     return () => window.removeEventListener('movimiento:guardado', handler)
   }, [cargarDatos])
 
-  const irMesAnterior  = () => setPeriodo(p => new Date(p.getFullYear(), p.getMonth() - 1, 1))
-  const irMesSiguiente = () => setPeriodo(p => new Date(p.getFullYear(), p.getMonth() + 1, 1))
+  // Navegación anterior / siguiente
+  const irAnterior = () => {
+    if (tabActivo === 'Mes') setMesFecha(p => new Date(p.getFullYear(), p.getMonth() - 1, 1))
+    if (tabActivo === 'Año') setAnioNav(p => p - 1)
+  }
+  const irSiguiente = () => {
+    if (tabActivo === 'Mes') setMesFecha(p => new Date(p.getFullYear(), p.getMonth() + 1, 1))
+    if (tabActivo === 'Año') setAnioNav(p => p + 1)
+  }
 
-  // Deltas vs mes anterior
+  const showNav = tabActivo === 'Mes' || tabActivo === 'Año'
+
   const deltaBalance     = data && dataPrev ? calcDelta(data.metricas.balance,     dataPrev.metricas.balance)     : null
   const deltaIngresos    = data && dataPrev ? calcDelta(data.metricas.ingresos,    dataPrev.metricas.ingresos)    : null
   const deltaEgresos     = data && dataPrev ? calcDelta(data.metricas.egresos,     dataPrev.metricas.egresos)     : null
   const deltaInversiones = data && dataPrev ? calcDelta(data.metricas.inversiones, dataPrev.metricas.inversiones) : null
 
+  const tituloGrafico = tabActivo === 'Año'
+    ? `Resumen mensual ${anioNav}`
+    : 'Ingresos vs Egresos — últimos 6 meses'
+
   return (
     <div className="space-y-6">
-      {/* Header con tabs de período + navegación de mes */}
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4">
           <h1 className="text-2xl font-display font-bold text-jy-text">Dashboard</h1>
-          <div className="flex items-center gap-1">
-            {PERIODOS.map(p => {
-              const enabled = p === 'Mes' // sólo Mes funcional por ahora
-              return (
-                <button
-                  key={p}
-                  onClick={() => enabled && setPeriodoTab(p)}
-                  disabled={!enabled}
-                  className={cn(
-                    'px-3 py-1 rounded text-xs font-semibold uppercase tracking-wider transition-colors',
-                    periodoTab === p
-                      ? 'text-jy-accent border-b-2 border-jy-accent'
-                      : enabled
-                        ? 'text-jy-secondary hover:text-jy-text'
-                        : 'text-jy-secondary/40 cursor-not-allowed'
-                  )}
-                  title={!enabled ? 'Próximamente' : undefined}
-                >
-                  {p}
-                </button>
-              )
-            })}
+          {/* Tabs de período */}
+          <div className="flex items-center gap-0.5 bg-jy-input rounded-lg p-0.5">
+            {(['Hoy', 'Semana', 'Mes', 'Año'] as TabPeriodo[]).map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setTabActivo(tab)}
+                className={cn(
+                  'px-3 py-1 rounded text-xs font-semibold transition-colors',
+                  tabActivo === tab
+                    ? 'bg-jy-accent text-white'
+                    : 'text-jy-secondary hover:text-jy-text'
+                )}
+              >
+                {tab}
+              </button>
+            ))}
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={irMesAnterior}
-            className="p-1.5 rounded hover:bg-jy-input text-jy-secondary hover:text-jy-text transition-colors"
-            aria-label="Mes anterior"
-          >
-            <ChevronLeft size={16} />
-          </button>
-          <span className="text-jy-text font-semibold text-sm min-w-[120px] text-center capitalize">
-            {formatMes(periodo)}
-          </span>
-          <button
-            onClick={irMesSiguiente}
-            className="p-1.5 rounded hover:bg-jy-input text-jy-secondary hover:text-jy-text transition-colors"
-            aria-label="Mes siguiente"
-          >
-            <ChevronRight size={16} />
-          </button>
-        </div>
+        {/* Navegación de período */}
+        {showNav && (
+          <div className="flex items-center gap-2">
+            <button
+              onClick={irAnterior}
+              className="p-1.5 rounded hover:bg-jy-input text-jy-secondary hover:text-jy-text transition-colors"
+            >
+              <ChevronLeft size={16} />
+            </button>
+            <span className="text-jy-text font-semibold text-sm min-w-[120px] text-center capitalize">
+              {labelNavegacion(tabActivo, mesFecha, anioNav)}
+            </span>
+            <button
+              onClick={irSiguiente}
+              className="p-1.5 rounded hover:bg-jy-input text-jy-secondary hover:text-jy-text transition-colors"
+            >
+              <ChevronRight size={16} />
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* Tarjetas de métricas con deltas */}
+      {/* Tarjetas de métricas */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard
           titulo="Balance"
@@ -178,7 +226,7 @@ export default function DashboardPage() {
           colorClase="text-jy-red"
           icono={<TrendingDown size={18} />}
           delta={deltaEgresos?.texto}
-          deltaPositivo={deltaEgresos ? !deltaEgresos.positivo : undefined} // subir egresos es "malo"
+          deltaPositivo={deltaEgresos ? !deltaEgresos.positivo : undefined}
         />
         <MetricCard
           titulo="Inversiones"
@@ -190,20 +238,20 @@ export default function DashboardPage() {
         />
       </div>
 
-      {/* Gráfico 2/3 + Últimos movimientos 1/3 */}
+      {/* Gráfico + Últimos movimientos */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="lg:col-span-2">
-          {!cargando && data && <GraficoBarras datos={data.grafico} />}
-          {cargando && <div className="bg-jy-card rounded-lg border border-jy-border h-[300px] animate-pulse" />}
+          {!cargando && data ? (
+            <GraficoBarras datos={data.grafico} titulo={tituloGrafico} />
+          ) : (
+            <div className="bg-jy-card rounded-lg border border-jy-border h-[300px] animate-pulse" />
+          )}
         </div>
 
         <div className="bg-jy-card rounded-lg p-5 border border-jy-border">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-jy-text font-semibold text-sm">Últimos movimientos</h2>
-            <Link
-              href="/movimientos"
-              className="text-jy-accent text-xs font-medium flex items-center gap-1 hover:underline"
-            >
+            <Link href="/movimientos" className="text-jy-accent text-xs font-medium flex items-center gap-1 hover:underline">
               Ver todos <ArrowRight size={12} />
             </Link>
           </div>
@@ -215,16 +263,11 @@ export default function DashboardPage() {
               ))}
             </div>
           ) : !data?.ultimos.length ? (
-            <p className="text-jy-secondary text-sm text-center py-6">
-              No hay movimientos registrados
-            </p>
+            <p className="text-jy-secondary text-sm text-center py-6">No hay movimientos registrados</p>
           ) : (
             <div className="space-y-2">
               {data.ultimos.slice(0, 5).map((m) => (
-                <div
-                  key={m.id}
-                  className="flex items-center justify-between py-2 border-b border-jy-border/50 last:border-0"
-                >
+                <div key={m.id} className="flex items-center justify-between py-2 border-b border-jy-border/50 last:border-0">
                   <div className="flex flex-col gap-0.5 min-w-0">
                     <span className="text-jy-text text-sm truncate">
                       {m.descripcion ?? m.categoria?.nombre ?? '—'}
@@ -270,7 +313,7 @@ export default function DashboardPage() {
                     </span>
                   </p>
                 </div>
-                <span className="text-jy-text font-semibold text-sm tnum">{formatPesos(c.monto)}</span>
+                <span className="text-jy-text font-semibold text-sm">{formatPesos(c.monto)}</span>
               </div>
             ))}
           </div>
