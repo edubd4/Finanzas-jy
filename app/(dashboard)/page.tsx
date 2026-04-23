@@ -5,6 +5,7 @@ import { Wallet, TrendingUp, TrendingDown, LineChart, ArrowRight, Handshake, Cal
 import Link from 'next/link'
 import { MetricCard } from '@/components/dashboard/MetricCard'
 import { GraficoBarras } from '@/components/dashboard/GraficoBarras'
+import { GraficoCategorias } from '@/components/dashboard/GraficoCategorias'
 import { TipoBadge } from '@/components/shared/TipoBadge'
 import { MontoColoreado } from '@/components/shared/MontoColoreado'
 import { formatPesos, formatFecha, formatMes, cn } from '@/lib/utils'
@@ -32,6 +33,7 @@ interface DashboardData {
   metricas: { ingresos: number; egresos: number; inversiones: number; balance: number }
   ultimos: Movimiento[]
   grafico: { mes: string; ingresos: number; egresos: number }[]
+  categorias: { nombre: string; tipo: string; total: number }[]
   proximosPagos?: CuotaProxima[]
 }
 
@@ -284,6 +286,14 @@ export default function DashboardPage() {
           )}
         </div>
       </div>
+
+      {/* Distribución por categoría */}
+      {!cargando && data && data.categorias.length > 0 && (
+        <GraficoCategorias categorias={data.categorias} />
+      )}
+      {cargando && (
+        <div className="bg-jy-card rounded-xl border border-white/5 h-64 animate-pulse" />
+      )}
 
       {/* Próximos pagos de préstamos */}
       {!cargando && data?.proximosPagos && data.proximosPagos.length > 0 && (

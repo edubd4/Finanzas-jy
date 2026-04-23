@@ -31,10 +31,10 @@ export async function GET(req: NextRequest) {
     ? parseInt(searchParams.get('grafico_anio')!)
     : null
 
-  // 1. Métricas del período
+  // 1. Métricas + breakdown por categoría (un solo query)
   const { data: movimientosPeriodo } = await supabase
     .from('movimientos')
-    .select('tipo, monto')
+    .select('tipo, monto, categoria:categorias(id, nombre)')
     .eq('created_by', user.id)
     .is('deleted_at', null)
     .neq('estado', 'ELIMINADO')
@@ -42,12 +42,32 @@ export async function GET(req: NextRequest) {
     .lte('fecha', hasta)
 
   const metricas = { ingresos: 0, egresos: 0, inversiones: 0, balance: 0 }
+
+  // Acumular por categoría+tipo para el pie chart
+  const catMap = new Map<string, { nombre: string; tipo: string; total: number }>()
+
   for (const m of movimientosPeriodo ?? []) {
     if (m.tipo === 'INGRESO') metricas.ingresos += m.monto
     if (m.tipo === 'EGRESO' || m.tipo === 'GASTO') metricas.egresos += m.monto
     if (m.tipo === 'INVERSION') metricas.inversiones += m.monto
+
+    const cat = m.categoria as { id: string; nombre: string } | null
+    const key = `${m.tipo}::${cat?.id ?? '__sin_categoria__'}`
+    const existing = catMap.get(key)
+    if (existing) {
+      existing.total += m.monto
+    } else {
+      catMap.set(key, {
+        nombre: cat?.nombre ?? 'Sin categoría',
+        tipo: m.tipo,
+        total: m.monto,
+      })
+    }
   }
   metricas.balance = metricas.ingresos - metricas.egresos
+
+  const categorias = Array.from(catMap.values())
+    .sort((a, b) => b.total - a.total)
 
   // 2. Últimos 5 movimientos (siempre los más recientes, sin filtro de período)
   const { data: ultimos } = await supabase
@@ -146,6 +166,7 @@ export async function GET(req: NextRequest) {
     metricas,
     ultimos: ultimos ?? [],
     grafico: graficoData,
+    categorias,
     proximosPagos: cuotasProx ?? [],
   })
 }
