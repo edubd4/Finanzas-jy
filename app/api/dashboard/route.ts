@@ -51,7 +51,7 @@ export async function GET(req: NextRequest) {
     if (m.tipo === 'EGRESO' || m.tipo === 'GASTO') metricas.egresos += m.monto
     if (m.tipo === 'INVERSION') metricas.inversiones += m.monto
 
-    const cat = m.categoria as { id: string; nombre: string } | null
+    const cat = m.categoria as unknown as { id: string; nombre: string } | null
     const key = `${m.tipo}::${cat?.id ?? '__sin_categoria__'}`
     const existing = catMap.get(key)
     if (existing) {
