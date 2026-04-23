@@ -8,8 +8,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "FinanzasJY",
-  description: "Gestión financiera personal de Jose Ybarra",
+  title: "FinancePro",
+  description: "Sistema de gestión financiera personal",
 };
 
 export default function RootLayout({
