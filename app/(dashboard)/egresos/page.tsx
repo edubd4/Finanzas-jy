@@ -5,7 +5,8 @@ import { TrendingDown } from 'lucide-react'
 import { TipoBadge } from '@/components/shared/TipoBadge'
 import { MontoColoreado } from '@/components/shared/MontoColoreado'
 import { PeriodoSelector } from '@/components/shared/PeriodoSelector'
-import { formatFecha, formatPesos } from '@/lib/utils'
+import { formatFecha } from '@/lib/utils'
+import { useCurrency } from '@/lib/currency'
 
 interface Movimiento {
   id: string
@@ -18,6 +19,7 @@ interface Movimiento {
 }
 
 export default function EgresosPage() {
+  const { fmt } = useCurrency()
   const [periodo, setPeriodo] = useState(new Date())
   const [movimientos, setMovimientos] = useState<Movimiento[]>([])
   const [cargando, setCargando] = useState(true)
@@ -62,15 +64,15 @@ export default function EgresosPage() {
       <div className="grid grid-cols-3 gap-3">
         <div className="bg-jy-card rounded-xl p-3 border border-white/5 text-center">
           <p className="text-jy-secondary text-xs mb-1">Egresos fijos</p>
-          <p className="text-jy-red font-semibold text-sm">{formatPesos(totalEgreso)}</p>
+          <p className="text-jy-red font-semibold text-sm">{fmt(totalEgreso)}</p>
         </div>
         <div className="bg-jy-card rounded-xl p-3 border border-white/5 text-center">
           <p className="text-jy-secondary text-xs mb-1">Gastos variables</p>
-          <p className="text-jy-red font-semibold text-sm">{formatPesos(totalGasto)}</p>
+          <p className="text-jy-red font-semibold text-sm">{fmt(totalGasto)}</p>
         </div>
         <div className="bg-jy-card rounded-xl p-3 border border-jy-red/20 text-center">
           <p className="text-jy-secondary text-xs mb-1">Total combinado</p>
-          <p className="text-jy-red font-display font-semibold">{formatPesos(totalCombinado)}</p>
+          <p className="text-jy-red font-display font-semibold">{fmt(totalCombinado)}</p>
         </div>
       </div>
 

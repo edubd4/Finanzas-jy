@@ -4,7 +4,8 @@ import { useState, useEffect, useCallback } from 'react'
 import { TrendingUp } from 'lucide-react'
 import { MontoColoreado } from '@/components/shared/MontoColoreado'
 import { PeriodoSelector } from '@/components/shared/PeriodoSelector'
-import { formatFecha, formatPesos } from '@/lib/utils'
+import { formatFecha } from '@/lib/utils'
+import { useCurrency } from '@/lib/currency'
 
 interface Movimiento {
   id: string
@@ -17,6 +18,7 @@ interface Movimiento {
 }
 
 export default function IngresosPage() {
+  const { fmt } = useCurrency()
   const [periodo, setPeriodo] = useState(new Date())
   const [movimientos, setMovimientos] = useState<Movimiento[]>([])
   const [cargando, setCargando] = useState(true)
@@ -57,7 +59,7 @@ export default function IngresosPage() {
 
       <div className="bg-jy-card rounded-xl p-4 border border-jy-green/20 flex items-center justify-between">
         <span className="text-jy-secondary text-sm">Total ingresos del período</span>
-        <span className="text-jy-green font-display font-semibold text-xl">{formatPesos(total)}</span>
+        <span className="text-jy-green font-display font-semibold text-xl">{fmt(total)}</span>
       </div>
 
       {cargando ? (

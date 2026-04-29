@@ -8,7 +8,8 @@ import { GraficoBarras } from '@/components/dashboard/GraficoBarras'
 import { GraficoCategorias } from '@/components/dashboard/GraficoCategorias'
 import { TipoBadge } from '@/components/shared/TipoBadge'
 import { MontoColoreado } from '@/components/shared/MontoColoreado'
-import { formatPesos, formatFecha, formatMes, cn } from '@/lib/utils'
+import { formatFecha, formatMes, cn } from '@/lib/utils'
+import { useCurrency } from '@/lib/currency'
 
 interface Movimiento {
   id: string
@@ -89,6 +90,7 @@ function labelNavegacion(tab: TabPeriodo, mesFecha: Date, anioNav: number) {
 
 // ── Componente ────────────────────────────────────────────────────────────────
 export default function DashboardPage() {
+  const { fmt } = useCurrency()
   const [tabActivo, setTabActivo]   = useState<TabPeriodo>('Mes')
   const [mesFecha, setMesFecha]     = useState(new Date())
   const [anioNav, setAnioNav]       = useState(new Date().getFullYear())
@@ -160,55 +162,54 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div className="flex items-center gap-4">
+      <div className="space-y-3">
+        <div className="flex items-center justify-between gap-3">
           <h1 className="text-2xl font-display font-bold text-jy-text">Dashboard</h1>
-          {/* Tabs de período */}
-          <div className="flex items-center gap-0.5 bg-jy-input rounded-lg p-0.5">
-            {(['Hoy', 'Semana', 'Mes', 'Año'] as TabPeriodo[]).map((tab) => (
+          {/* Navegación de período */}
+          {showNav && (
+            <div className="flex items-center gap-1.5">
               <button
-                key={tab}
-                onClick={() => setTabActivo(tab)}
-                className={cn(
-                  'px-3 py-1 rounded text-xs font-semibold transition-colors',
-                  tabActivo === tab
-                    ? 'bg-jy-accent text-white'
-                    : 'text-jy-secondary hover:text-jy-text'
-                )}
+                onClick={irAnterior}
+                className="p-1.5 rounded hover:bg-jy-input text-jy-secondary hover:text-jy-text transition-colors"
               >
-                {tab}
+                <ChevronLeft size={16} />
               </button>
-            ))}
-          </div>
+              <span className="text-jy-text font-semibold text-sm min-w-[100px] text-center capitalize">
+                {labelNavegacion(tabActivo, mesFecha, anioNav)}
+              </span>
+              <button
+                onClick={irSiguiente}
+                className="p-1.5 rounded hover:bg-jy-input text-jy-secondary hover:text-jy-text transition-colors"
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          )}
         </div>
-
-        {/* Navegación de período */}
-        {showNav && (
-          <div className="flex items-center gap-2">
+        {/* Tabs de período */}
+        <div className="flex items-center gap-0.5 bg-jy-input rounded-lg p-0.5 w-fit">
+          {(['Hoy', 'Semana', 'Mes', 'Año'] as TabPeriodo[]).map((tab) => (
             <button
-              onClick={irAnterior}
-              className="p-1.5 rounded hover:bg-jy-input text-jy-secondary hover:text-jy-text transition-colors"
+              key={tab}
+              onClick={() => setTabActivo(tab)}
+              className={cn(
+                'px-3 py-1.5 rounded text-xs font-semibold transition-colors',
+                tabActivo === tab
+                  ? 'bg-jy-accent text-white'
+                  : 'text-jy-secondary hover:text-jy-text'
+              )}
             >
-              <ChevronLeft size={16} />
+              {tab}
             </button>
-            <span className="text-jy-text font-semibold text-sm min-w-[120px] text-center capitalize">
-              {labelNavegacion(tabActivo, mesFecha, anioNav)}
-            </span>
-            <button
-              onClick={irSiguiente}
-              className="p-1.5 rounded hover:bg-jy-input text-jy-secondary hover:text-jy-text transition-colors"
-            >
-              <ChevronRight size={16} />
-            </button>
-          </div>
-        )}
+          ))}
+        </div>
       </div>
 
       {/* Tarjetas de métricas */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard
           titulo="Balance"
-          valor={cargando ? '...' : formatPesos(data?.metricas.balance ?? 0)}
+          valor={cargando ? '...' : fmt(data?.metricas.balance ?? 0)}
           colorClase={(data?.metricas.balance ?? 0) >= 0 ? 'text-jy-green' : 'text-jy-red'}
           icono={<Wallet size={18} />}
           delta={deltaBalance?.texto}
@@ -216,7 +217,7 @@ export default function DashboardPage() {
         />
         <MetricCard
           titulo="Ingresos"
-          valor={cargando ? '...' : formatPesos(data?.metricas.ingresos ?? 0)}
+          valor={cargando ? '...' : fmt(data?.metricas.ingresos ?? 0)}
           colorClase="text-jy-green"
           icono={<TrendingUp size={18} />}
           delta={deltaIngresos?.texto}
@@ -224,7 +225,7 @@ export default function DashboardPage() {
         />
         <MetricCard
           titulo="Egresos"
-          valor={cargando ? '...' : formatPesos(data?.metricas.egresos ?? 0)}
+          valor={cargando ? '...' : fmt(data?.metricas.egresos ?? 0)}
           colorClase="text-jy-red"
           icono={<TrendingDown size={18} />}
           delta={deltaEgresos?.texto}
@@ -232,7 +233,7 @@ export default function DashboardPage() {
         />
         <MetricCard
           titulo="Inversiones"
-          valor={cargando ? '...' : formatPesos(data?.metricas.inversiones ?? 0)}
+          valor={cargando ? '...' : fmt(data?.metricas.inversiones ?? 0)}
           colorClase="text-jy-amber"
           icono={<LineChart size={18} />}
           delta={deltaInversiones?.texto}
@@ -323,7 +324,7 @@ export default function DashboardPage() {
                     </span>
                   </p>
                 </div>
-                <span className="text-jy-text font-semibold text-sm">{formatPesos(c.monto)}</span>
+                <span className="text-jy-text font-semibold text-sm">{fmt(c.monto)}</span>
               </div>
             ))}
           </div>

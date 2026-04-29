@@ -3,7 +3,8 @@
 import { useState, useMemo } from 'react'
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts'
 import { TIPO_LABEL } from '@/lib/constants'
-import { formatPesos, cn } from '@/lib/utils'
+import { useCurrency } from '@/lib/currency'
+import { cn } from '@/lib/utils'
 
 interface CategoriaDato {
   nombre: string
@@ -32,21 +33,23 @@ const TIPOS_FILTRO = [
 interface TooltipProps {
   active?: boolean
   payload?: { name: string; value: number; payload: { pct: string } }[]
-}
-
-const CustomTooltip = ({ active, payload }: TooltipProps) => {
-  if (!active || !payload?.length) return null
-  const d = payload[0]
-  return (
-    <div className="bg-jy-card border border-white/10 rounded-lg px-3 py-2 text-sm shadow-lg">
-      <p className="text-jy-text font-medium">{d.name}</p>
-      <p className="text-jy-secondary">{formatPesos(d.value)} · {d.payload.pct}</p>
-    </div>
-  )
+  fmt: (n: number) => string
 }
 
 export function GraficoCategorias({ categorias }: GraficoCategoríasProps) {
+  const { fmt } = useCurrency()
   const [tipoActivo, setTipoActivo] = useState<string>('EGRESO')
+
+  const CustomTooltip = ({ active, payload }: Omit<TooltipProps, 'fmt'>) => {
+    if (!active || !payload?.length) return null
+    const d = payload[0]
+    return (
+      <div className="bg-jy-card border border-white/10 rounded-lg px-3 py-2 text-sm shadow-lg">
+        <p className="text-jy-text font-medium">{d.name}</p>
+        <p className="text-jy-secondary">{fmt(d.value)} · {d.payload.pct}</p>
+      </div>
+    )
+  }
 
   const datos = useMemo(() => {
     const filtradas = categorias.filter((c) => c.tipo === tipoActivo)
@@ -132,7 +135,7 @@ export function GraficoCategorias({ categorias }: GraficoCategoríasProps) {
                 <span className="text-jy-text text-sm flex-1 truncate">{d.name}</span>
                 <span className="text-jy-secondary text-xs tabular-nums">{d.pct}</span>
                 <span className="text-jy-text text-xs font-medium tabular-nums min-w-[72px] text-right">
-                  {formatPesos(d.value)}
+                  {fmt(d.value)}
                 </span>
               </div>
             ))}
@@ -142,7 +145,7 @@ export function GraficoCategorias({ categorias }: GraficoCategoríasProps) {
               <span className="text-jy-secondary text-xs flex-1">Total</span>
               <span className="text-jy-secondary text-xs">100%</span>
               <span className="text-jy-text text-xs font-semibold tabular-nums min-w-[72px] text-right">
-                {formatPesos(totalFiltrado)}
+                {fmt(totalFiltrado)}
               </span>
             </div>
           </div>

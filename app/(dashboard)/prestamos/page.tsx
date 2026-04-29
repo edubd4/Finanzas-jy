@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { Handshake, Plus, Trash2, Check, ChevronDown, ChevronUp } from 'lucide-react'
-import { formatFecha, formatPesos, cn } from '@/lib/utils'
+import { formatFecha, cn } from '@/lib/utils'
+import { useCurrency } from '@/lib/currency'
 
 interface Cuota {
   id: string
@@ -27,6 +28,7 @@ interface Prestamo {
 }
 
 export default function PrestamosPage() {
+  const { fmt } = useCurrency()
   const [prestamos, setPrestamos] = useState<Prestamo[]>([])
   const [cargando, setCargando] = useState(true)
   const [mostrandoForm, setMostrandoForm] = useState(false)
@@ -126,7 +128,7 @@ export default function PrestamosPage() {
                     <p className="text-jy-text text-sm mt-1 truncate">{p.contraparte}</p>
                     <p className="text-jy-secondary text-xs">{pagadas}/{total} cuotas pagadas · inicia {formatFecha(p.fecha_inicio)}</p>
                   </div>
-                  <span className="text-jy-text font-display font-semibold">{formatPesos(p.monto_total)}</span>
+                  <span className="text-jy-text font-display font-semibold">{fmt(p.monto_total)}</span>
                   {isOpen ? <ChevronUp size={16} className="text-jy-secondary" /> : <ChevronDown size={16} className="text-jy-secondary" />}
                 </button>
 
@@ -153,7 +155,7 @@ export default function PrestamosPage() {
                             <p className="text-jy-secondary text-[11px]">Vence {formatFecha(c.fecha_vencimiento)}</p>
                           </div>
                           <span className={cn('text-sm font-medium', c.estado === 'PAGADA' && 'text-jy-green line-through')}>
-                            {formatPesos(c.monto)}
+                            {fmt(c.monto)}
                           </span>
                         </div>
                       ))}

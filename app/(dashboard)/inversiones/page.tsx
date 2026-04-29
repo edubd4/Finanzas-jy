@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { LineChart, ChevronDown, ChevronUp, AlertCircle, TrendingUp, TrendingDown } from 'lucide-react'
-import { formatFecha, formatPesos, cn } from '@/lib/utils'
+import { formatFecha, cn } from '@/lib/utils'
+import { useCurrency } from '@/lib/currency'
 
 interface Inversion {
   id: string
@@ -21,6 +22,7 @@ interface Inversion {
 }
 
 export default function InversionesPage() {
+  const { fmt } = useCurrency()
   const [inversiones, setInversiones] = useState<Inversion[]>([])
   const [cargando, setCargando] = useState(true)
   const [expandido, setExpandido] = useState<string | null>(null)
@@ -63,7 +65,7 @@ export default function InversionesPage() {
       <div className="grid grid-cols-2 gap-3">
         <div className="bg-jy-card rounded-xl p-4 border border-jy-amber/20">
           <p className="text-jy-secondary text-xs">Abiertas</p>
-          <p className="text-jy-amber font-display font-semibold text-lg mt-1">{formatPesos(totalAbierto)}</p>
+          <p className="text-jy-amber font-display font-semibold text-lg mt-1">{fmt(totalAbierto)}</p>
           <p className="text-jy-secondary text-[11px] mt-0.5">{abiertas.length} {abiertas.length === 1 ? 'inversión' : 'inversiones'}</p>
         </div>
         <div className="bg-jy-card rounded-xl p-4 border border-white/5">
@@ -134,6 +136,7 @@ function Seccion({ titulo, vacio, children }: { titulo: string; vacio: string; c
 function FilaInversion({ inv, expandido, onToggle, onCerrar, hoy }: {
   inv: Inversion; expandido: boolean; onToggle: () => void; onCerrar?: () => void; hoy: string
 }) {
+  const { fmt } = useCurrency()
   const cerrada = inv.estado_inversion === 'CERRADA'
   const alerta = !cerrada && inv.fecha_alerta_salida && inv.fecha_alerta_salida <= hoy
 
@@ -174,7 +177,7 @@ function FilaInversion({ inv, expandido, onToggle, onCerrar, hoy }: {
           </p>
         </div>
         <span className={cn('font-display font-semibold', cerrada ? 'text-jy-secondary' : 'text-jy-amber')}>
-          {formatPesos(inv.monto)}
+          {fmt(inv.monto)}
         </span>
         {expandido ? <ChevronUp size={16} className="text-jy-secondary" /> : <ChevronDown size={16} className="text-jy-secondary" />}
       </button>
@@ -183,13 +186,13 @@ function FilaInversion({ inv, expandido, onToggle, onCerrar, hoy }: {
         <div className="bg-jy-bg/40 px-4 py-3 border-t border-white/5">
           <div className="grid grid-cols-2 gap-3 text-xs">
             <Dato label="Fecha entrada" value={formatFecha(inv.fecha_entrada ?? inv.fecha)} />
-            <Dato label="Total invertido" value={formatPesos(inv.monto)} />
+            <Dato label="Total invertido" value={fmt(inv.monto)} />
             <Dato label="Alerta salida" value={inv.fecha_alerta_salida ? formatFecha(inv.fecha_alerta_salida) : '—'} />
-            <Dato label="Monto esperado" value={inv.monto_esperado ? formatPesos(inv.monto_esperado) : '—'} />
+            <Dato label="Monto esperado" value={inv.monto_esperado ? fmt(inv.monto_esperado) : '—'} />
             {cerrada && (
               <>
                 <Dato label="Fecha cierre" value={formatFecha(inv.fecha_cierre!)} />
-                <Dato label="Monto final" value={formatPesos(inv.monto_final!)} />
+                <Dato label="Monto final" value={fmt(inv.monto_final!)} />
                 <Dato label="% Retorno" value={`${retorno! >= 0 ? '+' : ''}${retorno!.toFixed(2)}%`} highlight={retorno! >= 0 ? 'green' : 'red'} />
                 <Dato label="Días mantenida" value={`${diasMantenida} días`} />
               </>
@@ -227,6 +230,7 @@ function Dato({ label, value, highlight }: { label: string; value: string; highl
 function ModalCerrar({ inversion, onClose, onSaved }: {
   inversion: Inversion; onClose: () => void; onSaved: () => void
 }) {
+  const { fmt } = useCurrency()
   const [montoFinal, setMontoFinal] = useState('')
   const [fechaCierre, setFechaCierre] = useState(new Date().toISOString().slice(0, 10))
   const [enviando, setEnviando] = useState(false)
@@ -267,7 +271,7 @@ function ModalCerrar({ inversion, onClose, onSaved }: {
         <form onSubmit={handleSubmit} className="space-y-3">
           <div>
             <span className="text-jy-secondary text-xs block mb-1">Monto invertido</span>
-            <p className="text-jy-text text-sm">{formatPesos(inversion.monto)}</p>
+            <p className="text-jy-text text-sm">{fmt(inversion.monto)}</p>
           </div>
 
           <label className="block">

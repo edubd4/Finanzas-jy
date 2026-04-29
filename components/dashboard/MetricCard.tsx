@@ -20,14 +20,14 @@ export function MetricCard({
   deltaPositivo,
 }: MetricCardProps) {
   return (
-    <div className="bg-jy-card rounded-lg p-5 flex flex-col gap-2 border border-jy-border hover:border-jy-accent/40 transition-colors">
+    <div className="bg-jy-card rounded-lg p-3.5 md:p-5 flex flex-col gap-1.5 md:gap-2 border border-jy-border hover:border-jy-accent/40 transition-colors">
       <div className="flex items-center justify-between">
-        <p className="text-jy-secondary text-[11px] font-semibold uppercase tracking-wider">
+        <p className="text-jy-secondary text-[10px] md:text-[11px] font-semibold uppercase tracking-wider">
           {titulo}
         </p>
         {icono && <span className="text-jy-secondary">{icono}</span>}
       </div>
-      <p className={cn('text-2xl font-display font-bold tnum', colorClase)}>
+      <p className={cn('text-xl md:text-2xl font-display font-bold tnum', colorClase)}>
         {valor}
       </p>
       {delta && (

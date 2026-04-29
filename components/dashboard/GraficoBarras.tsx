@@ -10,6 +10,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from 'recharts'
+import { useCurrency } from '@/lib/currency'
 
 interface DatoMes {
   mes: string
@@ -32,30 +33,29 @@ interface TooltipProps {
   active?: boolean
   payload?: TooltipEntry[]
   label?: string
-}
-
-const CustomTooltip = ({ active, payload, label }: TooltipProps) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className="bg-jy-card border border-white/10 rounded-lg p-3 text-sm">
-        <p className="text-jy-text font-medium mb-1">{label}</p>
-        {payload.map((entry: TooltipEntry) => (
-          <p key={entry.name} style={{ color: entry.color }}>
-            {entry.name === 'ingresos' ? 'Ingresos' : 'Egresos'}:{' '}
-            {new Intl.NumberFormat('es-AR', {
-              style: 'currency',
-              currency: 'ARS',
-              maximumFractionDigits: 0,
-            }).format(entry.value)}
-          </p>
-        ))}
-      </div>
-    )
-  }
-  return null
+  fmt: (n: number) => string
 }
 
 export function GraficoBarras({ datos, titulo = 'Ingresos vs Egresos — últimos 6 meses' }: GraficoBarrasProps) {
+  const { fmt } = useCurrency()
+
+  const CustomTooltip = ({ active, payload, label }: Omit<TooltipProps, 'fmt'>) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-jy-card border border-white/10 rounded-lg p-3 text-sm">
+          <p className="text-jy-text font-medium mb-1">{label}</p>
+          {payload.map((entry: TooltipEntry) => (
+            <p key={entry.name} style={{ color: entry.color }}>
+              {entry.name === 'ingresos' ? 'Ingresos' : 'Egresos'}:{' '}
+              {fmt(entry.value)}
+            </p>
+          ))}
+        </div>
+      )
+    }
+    return null
+  }
+
   return (
     <div className="bg-jy-card rounded-xl p-5 border border-white/5">
       <h2 className="text-jy-text font-semibold mb-4">{titulo}</h2>

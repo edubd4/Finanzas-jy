@@ -7,7 +7,8 @@ import { TipoBadge } from '@/components/shared/TipoBadge'
 import { MontoColoreado } from '@/components/shared/MontoColoreado'
 import { PeriodoSelector } from '@/components/shared/PeriodoSelector'
 import { FormularioMovimiento } from '@/components/movimientos/FormularioMovimiento'
-import { formatFecha, formatPesos } from '@/lib/utils'
+import { formatFecha } from '@/lib/utils'
+import { useCurrency } from '@/lib/currency'
 import { TIPO_MOVIMIENTO, TIPO_LABEL } from '@/lib/constants'
 
 interface Movimiento {
@@ -56,6 +57,7 @@ function agruparPorFecha(movimientos: Movimiento[]): GrupoFecha[] {
 }
 
 export default function MovimientosPage() {
+  const { fmt } = useCurrency()
   const searchParams = useSearchParams()
   const tipoQuery = searchParams.get('tipo')
   const tiposIniciales = tipoQuery ? tipoQuery.split(',').filter(Boolean) : []
@@ -171,7 +173,7 @@ export default function MovimientosPage() {
           <h1 className="text-2xl font-display font-semibold text-jy-text">Movimientos</h1>
           <button
             onClick={() => setFormularioAbierto(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-jy-accent text-jy-bg rounded text-sm font-semibold hover:bg-jy-accent-hi transition-colors"
+            className="hidden md:flex items-center gap-2 px-4 py-2 bg-jy-accent text-jy-bg rounded text-sm font-semibold hover:bg-jy-accent-hi transition-colors"
           >
             <Plus size={16} />
             Nuevo
@@ -189,18 +191,18 @@ export default function MovimientosPage() {
         <div className="flex gap-4 bg-jy-card rounded-xl p-4 border border-white/5">
           <div className="flex-1 text-center">
             <p className="text-jy-secondary text-xs mb-0.5">Ingresos</p>
-            <p className="text-jy-green font-semibold">{formatPesos(totalIngresos)}</p>
+            <p className="text-jy-green font-semibold">{fmt(totalIngresos)}</p>
           </div>
           <div className="w-px bg-white/10" />
           <div className="flex-1 text-center">
             <p className="text-jy-secondary text-xs mb-0.5">Egresos</p>
-            <p className="text-jy-red font-semibold">{formatPesos(totalEgresos)}</p>
+            <p className="text-jy-red font-semibold">{fmt(totalEgresos)}</p>
           </div>
           <div className="w-px bg-white/10" />
           <div className="flex-1 text-center">
             <p className="text-jy-secondary text-xs mb-0.5">Balance</p>
             <p className={`font-semibold ${totalIngresos - totalEgresos >= 0 ? 'text-jy-green' : 'text-jy-red'}`}>
-              {formatPesos(totalIngresos - totalEgresos)}
+              {fmt(totalIngresos - totalEgresos)}
             </p>
           </div>
         </div>
@@ -256,10 +258,10 @@ export default function MovimientosPage() {
                   </span>
                   <div className="flex gap-3 text-xs">
                     {grupo.totalIngresos > 0 && (
-                      <span className="text-jy-green">+{formatPesos(grupo.totalIngresos)}</span>
+                      <span className="text-jy-green">+{fmt(grupo.totalIngresos)}</span>
                     )}
                     {grupo.totalEgresos > 0 && (
-                      <span className="text-jy-red">-{formatPesos(grupo.totalEgresos)}</span>
+                      <span className="text-jy-red">-{fmt(grupo.totalEgresos)}</span>
                     )}
                   </div>
                 </div>

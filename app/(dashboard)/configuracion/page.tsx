@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Settings, Plus, X, Check, Pencil } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useCurrency, CURRENCIES } from '@/lib/currency'
 
 interface Categoria {
   id: string
@@ -21,6 +22,7 @@ const GRUPOS = [
 ]
 
 export default function ConfiguracionPage() {
+  const { currency, setCurrencyCode } = useCurrency()
   const [categorias, setCategorias] = useState<Categoria[]>([])
   const [cargando, setCargando] = useState(true)
 
@@ -143,6 +145,27 @@ export default function ConfiguracionPage() {
             <Settings size={20} className="text-jy-secondary" />
           </div>
           <h1 className="text-2xl font-display font-semibold text-jy-text">Configuración</h1>
+        </div>
+
+        {/* Divisa */}
+        <div className="bg-jy-card rounded-xl p-5 border border-white/5">
+          <h2 className="text-jy-text font-semibold mb-4">Divisa</h2>
+          <div className="flex flex-wrap gap-2">
+            {CURRENCIES.map(c => (
+              <button
+                key={c.code}
+                onClick={() => setCurrencyCode(c.code)}
+                className={cn(
+                  'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors border',
+                  currency.code === c.code
+                    ? 'bg-jy-accent text-white border-jy-accent'
+                    : 'bg-jy-input text-jy-secondary border-white/10 hover:text-jy-text'
+                )}
+              >
+                {c.symbol} {c.code} — {c.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Categorías */}
